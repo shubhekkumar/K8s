@@ -1,5 +1,3 @@
-Here is your **updated combined README** with both HPA + VPA, properly structured and renamed.
-
 ---
 
 # 🚀 Kubernetes Autoscaling Hands-on (HPA + VPA)
