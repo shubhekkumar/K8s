@@ -1,151 +1,66 @@
+Here is your **updated combined README** with both HPA + VPA, properly structured and renamed.
+
 ---
 
-# 🚀 Kubernetes HPA Hands-on (Apache Auto Scaling)
+# 🚀 Kubernetes Autoscaling Hands-on (HPA + VPA)
 
 ## 📌 Overview
 
-This project demonstrates **Horizontal Pod Autoscaling (HPA)** in Kubernetes using an Apache web server.
+This project demonstrates both **Horizontal Pod Autoscaler (HPA)** and **Vertical Pod Autoscaler (VPA)** in Kubernetes using an Apache web server.
 
-The application automatically scales pods based on CPU utilization by generating real-time load using a BusyBox container.
+* **HPA** → scales number of pods based on CPU
+* **VPA** → adjusts CPU/Memory of existing pods
+
+The project includes real-time load testing and observation of scaling behavior.
 
 ---
 
 ## 🧱 Tech Stack
 
-* Kubernetes (Kind / Any cluster)
+* Kubernetes (Kind / Minikube / Any cluster)
 * Docker (Apache httpd image)
 * kubectl
 * BusyBox (for load testing)
+* Metrics Server
 
 ---
 
-## 📂 Project Workflow (What You Did)
+## 📂 Project Workflow
 
-```id="k1t7v9"
-Create Namespace → Deploy Apache → Expose Service → Test App → Enable HPA → Generate Load → Observe Auto Scaling
+```bash
+Create Namespace → Deploy Apache → Expose Service → Test App → HPA Scaling → Remove HPA → Setup VPA → Generate Load → Observe Resource Optimization
 ```
 
 ---
 
-# ⚙️ Step-by-Step Implementation
+# ⚙️ PART 1: Horizontal Pod Autoscaler (HPA)
 
 ---
 
-## 1️⃣ Create Project Directory
+## 1️⃣ Create Namespace
 
-```bash id="z9c6x2"
-mkdir Apache
-cd Apache
-```
-
----
-
-## 2️⃣ Create Namespace
-
-```bash id="s4t9rm"
-vim namespace.yml
+```bash
 kubectl apply -f namespace.yml
 ```
 
-### namespace.yml
-
-```yaml id="2q6b7p"
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: apache
-```
-
 ---
 
-## 3️⃣ Create Apache Deployment
+## 2️⃣ Deploy Apache
 
-```bash id="8f9w2k"
-vim deployment.yml
+```bash
 kubectl apply -f deployment.yml
-```
-
-### deployment.yml
-
-```yaml id="9w2k4p"
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: apache-deployment
-  namespace: apache
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: apache
-  template:
-    metadata:
-      labels:
-        app: apache
-    spec:
-      containers:
-      - name: apache
-        image: httpd
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 200m
-```
-
----
-
-## 4️⃣ Verify Deployment
-
-```bash id="7l0m9x"
-kubectl get all -n apache
-```
-
----
-
-## 5️⃣ Create Service
-
-```bash id="3f8k2n"
-vim service.yml
 kubectl apply -f service.yml
 ```
 
-### service.yml
-
-```yaml id="1x8p4t"
-apiVersion: v1
-kind: Service
-metadata:
-  name: apache-service
-  namespace: apache
-spec:
-  selector:
-    app: apache
-  ports:
-  - port: 80
-    targetPort: 80
-  type: ClusterIP
-```
-
 ---
 
-## 6️⃣ Test Service (Inside Cluster)
+## 3️⃣ Access Application
 
-```bash id="6r2k1z"
-curl http://apache-service.apache.svc.cluster.local
-```
-
----
-
-## 7️⃣ Access Service Locally (Port Forward)
-
-```bash id="5v8t2a"
+```bash
 kubectl port-forward service/apache-service -n apache 82:80 --address=0.0.0.0
 ```
 
-Open in browser:
+Open:
 
 ```
 http://localhost:82
@@ -153,155 +68,185 @@ http://localhost:82
 
 ---
 
-## 8️⃣ Manual Scaling (Testing)
+## 4️⃣ Create HPA
 
-```bash id="2p7d4s"
-kubectl scale deployment apache-deployment -n apache --replicas=3
-```
-
----
-
-## 9️⃣ Create HPA
-
-```bash id="4h9k2m"
-vim hpa.yml
+```bash
 kubectl apply -f hpa.yml
 ```
 
-### hpa.yml
+Check:
 
-```yaml id="7m3k9v"
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: apache-hpa
-  namespace: apache
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: apache-deployment
-  minReplicas: 1
-  maxReplicas: 5
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 5
-```
-
----
-
-## 🔟 Check HPA
-
-```bash id="8m2k1q"
+```bash
 kubectl get hpa -n apache
 ```
 
-Example output:
-
-```id="n8z3k1"
-cpu: 101%/5% → scaling triggered
-```
-
 ---
 
-## 1️⃣1️⃣ Generate Load (Important Step)
+## 5️⃣ Generate Load
 
-```bash id="7p2v6m"
+```bash
 kubectl run -i --tty load-generator --image=busybox -n apache -- /bin/sh
 ```
 
 Inside container:
 
-```sh id="6r4t9p"
+```sh
 while true; do wget -q -O- http://apache-service.apache.svc.cluster.local; done
 ```
 
 ---
 
-## 1️⃣2️⃣ Observe Auto Scaling
+## 6️⃣ Observe Scaling
 
-```bash id="3m9k2x"
+```bash
+kubectl get pods -n apache
 kubectl get hpa -n apache -w
 ```
 
-```bash id="9k2m7v"
-kubectl get pods -n apache
+### 📊 Result
+
+* CPU reached ~100%
+* Pods scaled: **1 → 5 (max)**
+
+---
+
+# ⚙️ PART 2: Vertical Pod Autoscaler (VPA)
+
+---
+
+## ⚠️ Step 1: Remove HPA
+
+```bash
+kubectl delete -f hpa.yml
+```
+
+> HPA and VPA should not control the same deployment simultaneously.
+
+---
+
+## 2️⃣ Install VPA
+
+```bash
+git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler
+./hack/vpa-up.sh
 ```
 
 ---
 
-## 📊 Actual Result (Your Case)
+## 3️⃣ Apply VPA Configuration
 
-* CPU usage increased → **101%**
-* HPA scaled pods:
+```bash
+kubectl apply -f vpa.yml
+```
 
-  * 1 → 4 → 5 (max limit)
-* Even at 22–30% CPU → stayed at 5 pods (target was 5%)
+Check:
 
----
+```bash
+kubectl get vpa -n apache
+```
 
-## 🛑 Stop Load
+Example:
 
-```bash id="2m9v4k"
-CTRL + C
-kubectl delete pod load-generator -n apache
+```
+NAME         MODE   CPU   MEM
+apache-vpa   Auto   25m   250Mi
 ```
 
 ---
 
-# 🧠 Key Concepts Learned
+## 4️⃣ Generate Load Again
 
-* Kubernetes Deployment & Service
-* DNS-based service access
-* Port forwarding
-* Manual vs Auto scaling
-* HPA working with CPU metrics
-* Load testing inside cluster
+```bash
+kubectl run -i --tty load-generator --image=busybox -n apache /bin/sh
+```
+
+```sh
+while true; do wget -q -O- http://apache-service.apache.svc.cluster.local; done
+```
 
 ---
 
-# ⚠️ Important Requirements
+## 5️⃣ Monitor Resource Usage
 
-### ✅ Metrics Server must be running
-
-```bash id="8n2k4p"
+```bash
 kubectl top pods -n apache
 ```
 
 ---
 
-### ✅ CPU requests must be defined
+## 6️⃣ Observe VPA Recommendations
 
-```yaml id="3p9k2m"
-resources:
-  requests:
-    cpu: 100m
+```bash
+watch kubectl get vpa -n apache
+```
+
+### 📊 Result
+
+* CPU usage increased
+* VPA updated recommendation:
+
+```
+Before → 25m
+After  → 126m
 ```
 
 ---
 
-# 📈 How HPA Works
+# 🧠 Key Concepts
 
-* Compares:
-
-  ```
-  Current CPU vs Target CPU
-  ```
-* If higher → scale up
-* If lower → scale down
+| Feature        | Description                |
+| -------------- | -------------------------- |
+| HPA            | Scales number of pods      |
+| VPA            | Adjusts CPU/Memory of pods |
+| Metrics Server | Provides resource metrics  |
+| BusyBox        | Used for load testing      |
 
 ---
 
-# 🎯 Final Output
+# ⚠️ Important Notes
 
-✔ Apache app deployed
-✔ Service exposed
-✔ Load generated
-✔ Pods auto-scaled (1 → 5)
+### ❗ VPA Warning
+
+```
+UpdateMode "Auto" is deprecated
+```
+
+Recommended modes:
+
+* `Recreate`
+* `Initial`
+* `InPlaceOrRecreate`
+
+---
+
+### ❗ Requirements
+
+```bash
+kubectl top pods -n apache
+```
+
+✔ Metrics Server must be installed
+✔ CPU requests must be defined
+
+---
+
+# 📈 HPA vs VPA
+
+| Feature      | HPA            | VPA                   |
+| ------------ | -------------- | --------------------- |
+| Scaling Type | Horizontal     | Vertical              |
+| Changes      | Pods count     | CPU/Memory            |
+| Use Case     | Traffic spikes | Resource optimization |
+
+---
+
+# 🎯 Final Outcome
+
+✔ Apache deployed successfully
+✔ HPA scaled pods (1 → 5)
+✔ VPA adjusted CPU dynamically (25m → 126m)
+✔ Real-time load testing validated both approaches
 
 ---
 
@@ -313,7 +258,5 @@ SAM (DevOps Learner)
 
 # ⭐ If you like this project
 
-Give it a ⭐ and share feedback!
-
----
+Give it a ⭐ and share feedback
 
