@@ -1,0 +1,653 @@
+Script started on 2026-05-19 09:44:07+05:30 [TERM="xterm-256color" TTY="/dev/pts/0" COLUMNS="102" LINES="53"]
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ docker ps[1Pss -tuln[1Ptulndocker imagesrm -f 37248f9876d4ps -a[Krmi shubheksam/devops-app:v212ps -a[Krm -f 37248f9876d4[12Pimages[6Pss tuln-tulndocker ps[K[7mchmod 700 get_helm.sh[27m[1Pchmod 700 get_helm.s[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[7mcurl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/[27m[7ms[27m[7mcripts/get-helm-4[27m[A]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ls
+[?2004lget_helm.sh  helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ [7mchmod 700 get_helm.sh[27mchmod 700 get_helm.sh
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ [7m./get_helm.sh[27m./get_helm.sh
+[?2004lDownloading https://get.helm.sh/helm-v4.2.0-linux-amd64.tar.gz
+Verifying checksum... Done.
+Preparing to install helm into /usr/local/bin
+[sudo] password for shubheksam: 
+helm installed into /usr/local/bin/helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm version
+[?2004lversion.BuildInfo{Version:"v4.2.0", GitCommit:"06468084e85c244c712834933d25ea232a4c2093", GitTreeState:"clean", GoVersion:"go1.26.3", KubeClientVersion:"v1.36"}
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ hek[Klm  [Kcreate apache-helm
+[?2004lCreating apache-helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ls
+[?2004l[0m[01;34mapache-helm[0m  [01;32mget_helm.sh[0m  helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ cda[K apache-helm/
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ ls
+[?2004lChart.yaml  [0m[01;34mcharts[0m  [01;34mtemplates[0m  values.yaml
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ tree
+[?2004l[01;34m.[0m
+├── Chart.yaml
+├── [01;34mcharts[0m
+├── [01;34mtemplates[0m
+│   ├── NOTES.txt
+│   ├── _helpers.tpl
+│   ├── deployment.yaml
+│   ├── hpa.yaml
+│   ├── httproute.yaml
+│   ├── ingress.yaml
+│   ├── service.yaml
+│   ├── serviceaccount.yaml
+│   └── [01;34mtests[0m
+│       └── test-connection.yaml
+└── values.yaml
+
+4 directories, 11 files
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ cd templates/
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm/templates[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm/templates[00m$  [Kvim d[Kse`[Krvice.yaml 
+[?2004l[?1049h[22;0;0t[>4;2m[?1h=[?2004h[?1004h[1;53r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[53;1H"service.yaml" 15L, 373B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c]10;?]11;?[1;1H[36mapiVersion[m[35m:[m v1
+[36mkind[m[35m:[m Service[2;14H[K[3;1H[36mmetadata[m[35m:[m[3;10H[K[4;3H[36mname[m[35m:[m [35m{{[m include [31m"apache-helm.fullname"[m . [35m}}[m
+  [36mlabels[m[35m:
+[m    [35m{{[m- include [31m"apache-helm.labels"[m . | nindent [31m4[m [35m}}[m
+[36mspec[m[35m:[m
+  [36mtype[m[35m:[m [35m{{[m .Values.service.type [35m}}[m
+  [36mports[m[35m:[m
+    [38;5;130m- [m[36mport[m[35m:[m [35m{{[m .Values.service.port [35m}}[m[11;7H[36mtargetPort[m[35m:[m http[12;7H[36mprotocol[m[35m:[m TCP[13;7H[36mname[m[35m:[m http
+  [36mselector[m[35m:
+[m    [35m{{[m- include [31m"apache-helm.selectorLabels"[m . | nindent [31m4[m [35m}}[m
+[94m~                                                                                                     [17;1H~                                                                                                     [18;1H~                                                                                                     [19;1H~                                                                                                     [20;1H~                                                                                                     [21;1H~                                                                                                     [22;1H~                                                                                                     [23;1H~                                                                                                     [24;1H~                                                                                                     [25;1H~                                                                                                     [26;1H~                                                                                                     [27;1H~                                                                                                     [28;1H~                                                                                                     [29;1H~                                                                                                     [30;1H~                                                                                                     [31;1H~                                                                                                     [32;1H~                                                                                                     [33;1H~                                                                                                     [34;1H~                                                                                                     [35;1H~                                                                                                     [36;1H~                                                                                                     [37;1H~                                                                                                     [38;1H~                                                                                                     [39;1H~                                                                                                     [40;1H~                                                                                                     [41;1H~                                                                                                     [42;1H~                                                                                                     [43;1H~                                                                                                     [44;1H~                                                                                                     [45;1H~                                                                                                     [46;1H~                                                                                                     [47;1H~                                                                                                     [48;1H~                                                                                                     [49;1H~                                                                                                     [50;1H~                                                                                                     [51;1H~                                                                                                     [52;1H~                                                                                                     [m[53;85H1,1[11CAll[1;1H[?25h[?12$p[?25l[53;75H/[1;1H[53;76H0[1;1H[53;77H0[1;1H[53;78H0[1;1H[53;79H0[1;1H[53;80H/[1;1H[53;81H0[1;1H[53;82H0[1;1H[53;83H0[1;1H[53;84H0[1;1H[53;75H          [1;1H[27m[23m[29m[m[H[2J[1;1H[1m[96mapiVersion[m[38;5;224m:[m v1
+[1m[96mkind[m[38;5;224m:[m Service
+[1m[96mmetadata[m[38;5;224m:[m
+  [1m[96mname[m[38;5;224m:[m [38;5;224m{{[m include [95m"apache-helm.fullname"[m . [38;5;224m}}[m
+  [1m[96mlabels[m[38;5;224m:
+[m    [38;5;224m{{[m- include [95m"apache-helm.labels"[m . | nindent [95m4[m [38;5;224m}}[m
+[1m[96mspec[m[38;5;224m:[m
+  [1m[96mtype[m[38;5;224m:[m [38;5;224m{{[m .Values.service.type [38;5;224m}}[m
+  [1m[96mports[m[38;5;224m:[m
+    [93m- [m[1m[96mport[m[38;5;224m:[m [38;5;224m{{[m .Values.service.port [38;5;224m}}[m[11;7H[1m[96mtargetPort[m[38;5;224m:[m http[12;7H[1m[96mprotocol[m[38;5;224m:[m TCP[13;7H[1m[96mname[m[38;5;224m:[m http
+  [1m[96mselector[m[38;5;224m:
+[m    [38;5;224m{{[m- include [95m"apache-helm.selectorLabels"[m . | nindent [95m4[m [38;5;224m}}[m
+[94m~                                                                                                     [17;1H~                                                                                                     [18;1H~                                                                                                     [19;1H~                                                                                                     [20;1H~                                                                                                     [21;1H~                                                                                                     [22;1H~                                                                                                     [23;1H~                                                                                                     [24;1H~                                                                                                     [25;1H~                                                                                                     [26;1H~                                                                                                     [27;1H~                                                                                                     [28;1H~                                                                                                     [29;1H~                                                                                                     [30;1H~                                                                                                     [31;1H~                                                                                                     [32;1H~                                                                                                     [33;1H~                                                                                                     [34;1H~                                                                                                     [35;1H~                                                                                                     [36;1H~                                                                                                     [37;1H~                                                                                                     [38;1H~                                                                                                     [39;1H~                                                                                                     [40;1H~                                                                                                     [41;1H~                                                                                                     [42;1H~                                                                                                     [43;1H~                                                                                                     [44;1H~                                                                                                     [45;1H~                                                                                                     [46;1H~                                                                                                     [47;1H~                                                                                                     [48;1H~                                                                                                     [49;1H~                                                                                                     [50;1H~                                                                                                     [51;1H~                                                                                                     [52;1H~                                                                                                     [m[53;85H1,1[11CAll"service.yaml" 15L, 373B[1;1H[?25h[?25l[53;75H~@k[1;1H[53;75H   [2;1H[53;85H2[2;1H[?25h[?25l[53;75H~@k[2;1H[53;75H   [3;1H[53;85H3[3;1H[?25h[?25l[53;75H~@k[3;1H[53;75H   [4;1H[53;85H4[4;1H[?25h[?25l[53;75H~@k[4;1H[53;75H   [5;1H[53;85H5[5;1H[?25h[?25l[53;75H~@k[5;1H[53;75H   [6;1H[53;85H6[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [7;1H[53;85H7[7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [8;1H[53;85H8[8;1H[?25h[?25l[53;75H~@k[8;1H[53;75H   [9;1H[53;85H9[9;1H[?25h[?25l[53;75H~@k[9;1H[53;75H   [10;1H[53;85H10,1[10;1H[?25h[?25l[53;75H~@k[10;1H[53;75H   [11;1H[53;86H1[11;1H[?25h[?25l[53;75H~@k[11;1H[53;75H   [11;2H[53;88H2[11;2H[?25h[?25l[53;75H~@k[11;2H[53;75H   [11;3H[53;88H3[11;3H[?25h[?25l[53;75H~@k[11;3H[53;75H   [11;4H[53;88H4[11;4H[?25h[?25l[53;75H~@k[11;4H[53;75H   [11;5H[53;88H5[11;5H[?25h[?25l[53;75H~@k[11;5H[53;75H   [11;6H[53;88H6[11;6H[?25h[?25l[53;75H~@k[11;6H[53;75H   [11;7H[53;88H7[11;7H[?25h[?25l[53;75H~@k[11;7H[53;75H   [11;8H[53;88H8[11;8H[?25h[?25l[53;75H~@k[11;8H[53;75H   [11;9H[53;88H9[11;9H[?25h[?25l[53;75H~@k[11;9H[53;75H   [11;10H[53;88H10[11;10H[?25h[?25l[53;75H~@k[11;10H[53;75H   [11;11H[53;89H1[11;11H[?25h[?25l[53;75H~@k[11;11H[53;75H   [11;12H[53;89H2[11;12H[?25h[?25l[53;75H~@k[11;12H[53;75H   [11;13H[53;89H3[11;13H[?25h[?25l[53;75H~@k[11;13H[53;75H   [11;14H[53;89H4[11;14H[?25h[?25l[53;75H~@k[11;14H[53;75H   [11;15H[53;89H5[11;15H[?25h[?25l[53;75H~@k[11;15H[53;75H   [11;16H[53;89H6[11;16H[?25h[?25l[53;75H~@k[11;16H[53;75H   [11;17H[53;89H7[11;17H[?25h[?25l[53;75H~@k[11;17H[53;75H   [11;18H[53;89H8[11;18H[?25h[?25l[53;75H~@k[11;18H[53;75H   [11;19H[53;89H9[11;19H[?25h[?25l[53;75H~@k[11;19H[53;75H   [11;20H[53;88H20[11;20H[?25h[?25l[53;75H~@k[11;20H[53;75H   [11;21H[53;89H1[11;21H[?25h[?25l[53;75H~@k[11;21H[53;75H   [11;22H[53;89H2[11;22H[?25h[?25l[53;75H~@k[11;22H[53;75H   [11;22H[?25h[?25l[53;75Hi[11;22H[53;75H [11;22H[53;1H[1m-- INSERT --[m[53;13H[K[53;85H11,22[9CAll[11;22H[?25h[?25l[53;89H3[11;23H[?25h[?25l[11;22H[K[53;89H2[11;22H[?25h[?25l[11;21H[K[53;89H1[11;21H[?25h[?25l[11;20H[K[53;89H0[11;20H[?25h[?25l[11;19H[K[53;88H19[11;19H[?25h[?25l[38;5;224m{[m[53;88H20[11;20H[?25h[?25l[38;5;224m{[m[53;89H1[11;21H[?25h[?25l[53;89H2[11;22H[?25h[?25l.[53;89H3[11;23H[?25h[?25l[11;22H[K[53;89H2[11;22H[?25h[?25l,[53;89H3[11;23H[?25h[?25l[11;22H[K[53;89H2[11;22H[?25h[?25l,[53;89H3[11;23H[?25h[?25l[11;22H[K[53;89H2[11;22H[?25h[?25l.[53;89H3[11;23H[?25h[?25lv[53;89H4[11;24H[?25h[?25la[53;89H5[11;25H[?25h[?25ll[53;89H6[11;26H[?25h[?25lu[53;89H7[11;27H[?25h[?25le[53;89H8[11;28H[?25h[?25ls[53;89H9[11;29H[?25h[?25l.[53;88H30[11;30H[?25h[?25ls[53;89H1[11;31H[?25h[?25le[53;89H2[11;32H[?25h[?25lr[53;89H3[11;33H[?25h[?25lc[53;89H4[11;34H[?25h[?25li[53;89H5[11;35H[?25h[?25l[11;34H[K[53;89H4[11;34H[?25h[?25l[11;33H[K[53;89H3[11;33H[?25h[?25lv[53;89H4[11;34H[?25h[?25li[53;89H5[11;35H[?25h[?25lc[53;89H6[11;36H[?25h[?25le[53;89H7[11;37H[?25h[?25l.[53;89H8[11;38H[?25h[?25lt[53;89H9[11;39H[?25h[?25la[53;88H40[11;40H[?25h[?25lr[53;89H1[11;41H[?25h[?25lg[53;89H2[11;42H[?25h[?25le[53;89H3[11;43H[?25h[?25lt[53;89H4[11;44H[?25h[?25lP[53;89H5[11;45H[?25h[?25lo[53;89H6[11;46H[?25h[?25lr[53;89H7[11;47H[?25h[?25lt[53;89H8[11;48H[?25h[?25l[53;89H7[11;47H[?25h[?25l[53;89H6[11;46H[?25h[?25l[53;89H5[11;45H[?25h[?25l[53;89H4[11;44H[?25h[?25l[53;89H3[11;43H[?25h[?25l[53;89H2[11;42H[?25h[?25l[53;89H1[11;41H[?25h[?25l[53;89H0[11;40H[?25h[?25l[53;88H39[11;39H[?25h[?25l[53;89H8[11;38H[?25h[?25l[53;89H7[11;37H[?25h[?25l[53;89H6[11;36H[?25h[?25l[53;89H5[11;35H[?25h[?25l[53;89H4[11;34H[?25h[?25l[53;89H3[11;33H[?25h[?25l[53;89H2[11;32H[?25h[?25l[53;89H1[11;31H[?25h[?25l[53;89H0[11;30H[?25h[?25l[53;88H29[11;29H[?25h[?25l[53;89H8[11;28H[?25h[?25l[53;89H7[11;27H[?25h[?25l[53;89H6[11;26H[?25h[?25l[53;89H5[11;25H[?25h[?25l[53;89H4[11;24H[?25h[?25l\alues.service.targetPort[53;89H5[11;25H[?25h[?25lalues.service.targetPort[11;48H[K[53;89H4[11;24H[?25h[?25lValues.service.targetPort[53;89H5[11;25H[?25h[?25lalues.service.targetPort[11;48H[K[53;89H4[11;24H[?25h[?25lalues.service.targetPort[11;47H[K[53;89H3[11;23H[?25h[?25lValues.service.targetPort[53;89H4[11;24H[?25h[?25l[53;89H5[11;25H[?25h[?25l[53;89H6[11;26H[?25h[?25l[53;89H7[11;27H[?25h[?25l[53;89H8[11;28H[?25h[?25l[53;89H9[11;29H[?25h[?25l[53;88H30[11;30H[?25h[?25l[53;89H1[11;31H[?25h[?25l[53;89H2[11;32H[?25h[?25l[53;89H3[11;33H[?25h[?25l[53;89H4[11;34H[?25h[?25l[53;89H5[11;35H[?25h[?25l[53;89H6[11;36H[?25h[?25l[53;89H7[11;37H[?25h[?25l[53;89H8[11;38H[?25h[?25l[53;89H9[11;39H[?25h[?25l[53;88H40[11;40H[?25h[?25l[53;89H1[11;41H[?25h[?25l[53;89H2[11;42H[?25h[?25l[53;89H3[11;43H[?25h[?25l[53;89H4[11;44H[?25h[?25l[53;89H5[11;45H[?25h[?25l[53;89H6[11;46H[?25h[?25l[53;89H7[11;47H[?25h[?25l[53;89H8[11;48H[?25h[?25l[53;89H9[11;49H[?25h[?25l[38;5;224m}[m[11;20H[38;5;224m[46m{[28C}[m[53;88H50[11;50H[?25h[?25l[38;5;224m}[m[11;19H[38;5;224m[46m{[m[38;5;224m{[28C}[m[38;5;224m[46m}[m[53;89H1[11;51H[?25h[53;1H[K[11;50H[?25l[53;75H^[[11;50H[53;75H  [11;51H[53;85H11,50[9CAll[11;50H[?25h[?25l[53;75H:[11;50H[53;75H[K[53;1H:[?25hwq[?25l[?2004l[>4;m"service.yaml" 15L, 401B written[23;2t[23;1t
+[?1004l[?2004l[?1l>[?25h[>4;m[?1049l[23;0;0t[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm/templates[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm/templates[00m$  [Kvim cv[K[Kval[K[K[K[K[K[K[Kcd ../[K
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ vim v[KVal[K[K[K[K[K[K[Kcd te\[K[K[K[K[K[Kcat[K[K[Kvim Val[K[K[K[K[K[K[Kls
+[?2004lChart.yaml  [0m[01;34mcharts[0m  [01;34mtemplates[0m  values.yaml
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ vim values.yaml 
+[?2004l[?1049h[22;0;0t[>4;2m[?1h=[?2004h[?1004h[1;53r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[53;1H"values.yaml" 161L, 5277B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c]10;?]11;?[1;1H[34m# Default values for apache-helm.
+# This is a YAML-formatted file.[m[2;33H[K[3;1H[34m# Declare variables to be passed into your templates.[m[3;54H[K[5;1H[34m# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/coo[6;1Hncepts/workloads/controllers/replicaset/[m
+[36mreplicaCount[m[35m:[m [31m1[m
+
+[34m# This sets the container image more information can be found here: https://kubernetes.io/docs/conceptt[10;1Hs/containers/images/[m
+[36mimage[m[35m:[m
+  [36mrepository[m[35m:[m nginx
+ [34m # This sets the pull policy for images.[m
+  [36mpullPolicy[m[35m:[m IfNotPresent
+ [34m # Overrides the image tag whose default is the chart appVersion.[m
+  [36mtag[m[35m:[m [31m""[m
+
+[34m# This is for the secrets for pulling an image from a private repository more information can be foundd[19;1H here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m
+[36mimagePullSecrets[m[35m:[m [35m[][m
+[34m# This is to override the chart name.[m
+[36mnameOverride[m[35m:[m [31m""[m
+[36mfullnameOverride[m[35m:[m [31m""[m
+
+[34m# This section builds out the service account more information can be found here: https://kubernetes.ii[26;1Ho/docs/concepts/security/service-accounts/[m
+[36mserviceAccount[m[35m:[m
+ [34m # Specifies whether a service account should be created.[m
+  [36mcreate[m[35m:[m [31mtrue[m
+ [34m # Automatically mount a ServiceAccount's API credentials?[m
+  [36mautomount[m[35m:[m [31mtrue[m
+ [34m # Annotations to add to the service account.[m
+  [36mannotations[m[35m:[m [35m{}[m
+ [34m # The name of the service account to use.
+[m [34m # If not set and create is true, a name is generated using the fullname template.[m
+  [36mname[m[35m:[m [31m""[m
+
+[34m# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annn[40;1Hotations/[m
+[36mpodAnnotations[m[35m:[m [35m{}[m
+[34m# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labb[44;1Hels/[m
+[36mpodLabels[m[35m:[m [35m{}[m
+
+[36mpodSecurityContext[m[35m:[m [35m{}[m
+ [34m # fsGroup: 2000[m
+
+[36msecurityContext[m[35m:[m [35m{}[m
+ [34m # capabilities:
+[m [34m #   drop:[m[53;85H1,1[11CTop[1;1H[?25h[?12$p[?25l[53;75H/[1;1H[53;76H0[1;1H[53;77H0[1;1H[53;78H0[1;1H[53;79H0[1;1H[53;80H/[1;1H[53;81H0[1;1H[53;82H0[1;1H[53;83H0[1;1H[53;84H0[1;1H[53;75H          [1;1H[27m[23m[29m[m[H[2J[1;1H[96m# Default values for apache-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/coo[6;1Hncepts/workloads/controllers/replicaset/[m
+[1m[96mreplicaCount[m[38;5;224m:[m [95m1[m
+
+[96m# This sets the container image more information can be found here: https://kubernetes.io/docs/conceptt[10;1Hs/containers/images/[m
+[1m[96mimage[m[38;5;224m:[m
+  [1m[96mrepository[m[38;5;224m:[m nginx
+ [96m # This sets the pull policy for images.[m
+  [1m[96mpullPolicy[m[38;5;224m:[m IfNotPresent
+ [96m # Overrides the image tag whose default is the chart appVersion.[m
+  [1m[96mtag[m[38;5;224m:[m [95m""[m
+
+[96m# This is for the secrets for pulling an image from a private repository more information can be foundd[19;1H here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m
+[1m[96mimagePullSecrets[m[38;5;224m:[m [38;5;224m[][m
+[96m# This is to override the chart name.[m
+[1m[96mnameOverride[m[38;5;224m:[m [95m""[m
+[1m[96mfullnameOverride[m[38;5;224m:[m [95m""[m
+
+[96m# This section builds out the service account more information can be found here: https://kubernetes.ii[26;1Ho/docs/concepts/security/service-accounts/[m
+[1m[96mserviceAccount[m[38;5;224m:[m
+ [96m # Specifies whether a service account should be created.[m
+  [1m[96mcreate[m[38;5;224m:[m [95mtrue[m
+ [96m # Automatically mount a ServiceAccount's API credentials?[m
+  [1m[96mautomount[m[38;5;224m:[m [95mtrue[m
+ [96m # Annotations to add to the service account.[m
+  [1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # The name of the service account to use.
+[m [96m # If not set and create is true, a name is generated using the fullname template.[m
+  [1m[96mname[m[38;5;224m:[m [95m""[m
+
+[96m# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annn[40;1Hotations/[m
+[1m[96mpodAnnotations[m[38;5;224m:[m [38;5;224m{}[m
+[96m# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labb[44;1Hels/[m
+[1m[96mpodLabels[m[38;5;224m:[m [38;5;224m{}[m
+
+[1m[96mpodSecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # fsGroup: 2000[m
+
+[1m[96msecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # capabilities:
+[m [96m #   drop:[m[53;85H1,1[11CTop"values.yaml" 161L, 5277B[1;1H[?25h[?25l[53;75H~@k[1;1H[53;75H   [2;1H[53;85H2[2;1H[?25h[?25l[53;75H~@k[2;1H[53;75H   [3;1H[53;85H3[3;1H[?25h[?25l[53;75H~@k[3;1H[53;75H   [4;1H[53;85H4,0-1[4;1H[?25h[?25l[53;75H~@k[4;1H[53;75H   [5;1H[53;85H5,1  [5;1H[?25h[?25l[53;75H~@k[5;1H[53;75H   [7;1H[53;85H6[7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [8;1H[53;85H7,0-1[8;1H[?25h[?25l[53;75H~@k[8;1H[53;75H   [7;1H[53;85H6,1  [7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [7;2H[53;87H2[7;2H[?25h[?25l[53;75H~@k[7;2H[53;75H   [7;3H[53;87H3[7;3H[?25h[?25l[53;75H~@k[7;3H[53;75H   [7;4H[53;87H4[7;4H[?25h[?25l[53;75H~@k[7;4H[53;75H   [7;5H[53;87H5[7;5H[?25h[?25l[53;75H~@k[7;5H[53;75H   [7;6H[53;87H6[7;6H[?25h[?25l[53;75H~@k[7;6H[53;75H   [7;7H[53;87H7[7;7H[?25h[?25l[53;75H~@k[7;7H[53;75H   [7;8H[53;87H8[7;8H[?25h[?25l[53;75H~@k[7;8H[53;75H   [7;9H[53;87H9[7;9H[?25h[?25l[53;75H~@k[7;9H[53;75H   [7;10H[53;87H10[7;10H[?25h[?25l[53;75H~@k[7;10H[53;75H   [7;11H[53;88H1[7;11H[?25h[?25l[53;75H~@k[7;11H[53;75H   [7;12H[53;88H2[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [7;13H[53;88H3[7;13H[?25h[?25l[53;75H~@k[7;13H[53;75H   [7;14H[53;88H4[7;14H[?25h[?25l[53;75H~@k[7;14H[53;75H   [7;15H[53;88H5[7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75Hi[7;15H[53;75H [7;15H[53;1H[1m-- INSERT --[m[53;13H[K[53;85H6,15[10CTop[7;15H[?25h[?25l[53;88H6[7;16H[?25h[?25l[7;15H[K[53;88H5[7;15H[?25h[?25l[95m2[m[53;88H6[7;16H[?25h[?25l[53;85H7,1 [8;1H[?25h[?25l[53;85H8,16[9;16H[?25h[?25l[53;85H9,7 [11;7H[?25h[?25l[53;85H10,16[12;16H[?25h[?25l ginx[53;89H7[12;17H[?25h[?25lginx[12;20H[K[53;89H6[12;16H[?25h[?25l[53;86H1[13;16H[?25h[?25l[53;86H2[14;16H[?25h[?25l[53;86H3[15;16H[?25h[?25l[53;86H4,10[16;10H[?25h[?25l[53;86H5,1 [17;1H[?25h[?25l[53;86H6,16[18;16H[?25h[?25l[53;86H7[20;16H[?25h[27m[23m[29m[m[H[2J[?25l[1;1H[96m# Default values for apache-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/[m
+[1m[96mreplicaCount[m[38;5;224m:[m [95m2[m
+
+[96m# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/[m
+[1m[96mimage[m[38;5;224m:[m
+  [1m[96mrepository[m[38;5;224m:[m nginx
+ [96m # This sets the pull policy for images.[m
+  [1m[96mpullPolicy[m[38;5;224m:[m IfNotPresent
+ [96m # Overrides the image tag whose default is the chart appVersion.[m
+  [1m[96mtag[m[38;5;224m:[m [95m""[m
+
+[96m# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m
+[1m[96mimagePullSecrets[m[38;5;224m:[m [38;5;224m[][m
+[96m# This is to override the chart name.[m
+[1m[96mnameOverride[m[38;5;224m:[m [95m""[m
+[1m[96mfullnameOverride[m[38;5;224m:[m [95m""[m
+
+[96m# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/[m
+[1m[96mserviceAccount[m[38;5;224m:[m
+ [96m # Specifies whether a service account should be created.[m
+  [1m[96mcreate[m[38;5;224m:[m [95mtrue[m
+ [96m # Automatically mount a ServiceAccount's API credentials?[m
+  [1m[96mautomount[m[38;5;224m:[m [95mtrue[m
+ [96m # Annotations to add to the service account.[m
+  [1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # The name of the service account to use.
+[m [96m # If not set and create is true, a name is generated using the fullname template.[m
+  [1m[96mname[m[38;5;224m:[m [95m""[m
+
+[96m# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/[m
+[1m[96mpodAnnotations[m[38;5;224m:[m [38;5;224m{}[m
+[96m# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/[m
+[1m[96mpodLabels[m[38;5;224m:[m [38;5;224m{}[m
+
+[1m[96mpodSecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # fsGroup: 2000[m
+
+[1m[96msecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # capabilities:
+[m [96m #   drop:
+[m [96m #   - ALL
+[m [96m # readOnlyRootFilesystem: true
+[m [96m # runAsNonRoot: true
+[m [96m # runAsUser: 1000
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/[m
+[1m[96mservice[m[38;5;224m:[m
+[1m-- INSERT --[m[179C17,16[9CTop[17;16H[?25h[?25l[54;193H6[16;16H[?25h[?25l[54;193H5,1 [15;1H[?25h[?25l[54;193H4,10[14;10H[?25h[?25l[54;193H5,1 [15;1H[?25h[?25l[54;193H6,16[16;16H[?25h[?25l[54;193H7[17;16H[?25h[?25l[54;193H8[18;16H[?25h[?25l[54;193H9[19;16H[?25h[54;1H[K[19;15H[?25l[54;182H^[[19;15H[54;182H  [19;16H[54;192H19,15[9CTop[19;15H[?25h[?25l[54;182H:[19;15H[54;182H[K[54;1H:[?25hwq[?25l[?2004l[>4;m"values.yaml" 161L, 5277B written[23;2t[23;1t
+[?1004l[?2004l[?1l>[?25h[>4;m[?1049l[23;0;0t[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ [K]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ vim values.yaml 
+[?2004l[?1049h[22;0;0t[>4;2m[?1h=[?2004h[?1004h[1;53r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[53;1H"values.yaml" 161L, 5277B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c]10;?]11;?[1;1H[34m# Default values for apache-helm.
+# This is a YAML-formatted file.[m[2;33H[K[3;1H[34m# Declare variables to be passed into your templates.[m[3;54H[K[5;1H[34m# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/coo[6;1Hncepts/workloads/controllers/replicaset/[m
+[36mreplicaCount[m[35m:[m [31m2[m
+
+[34m# This sets the container image more information can be found here: https://kubernetes.io/docs/conceptt[10;1Hs/containers/images/[m
+[36mimage[m[35m:[m
+  [36mrepository[m[35m:[m nginx
+ [34m # This sets the pull policy for images.[m
+  [36mpullPolicy[m[35m:[m IfNotPresent
+ [34m # Overrides the image tag whose default is the chart appVersion.[m
+  [36mtag[m[35m:[m [31m""[m
+
+[34m# This is for the secrets for pulling an image from a private repository more information can be foundd[19;1H here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m
+[36mimagePullSecrets[m[35m:[m [35m[][m
+[34m# This is to override the chart name.[m
+[36mnameOverride[m[35m:[m [31m""[m
+[36mfullnameOverride[m[35m:[m [31m""[m
+
+[34m# This section builds out the service account more information can be found here: https://kubernetes.ii[26;1Ho/docs/concepts/security/service-accounts/[m
+[36mserviceAccount[m[35m:[m
+ [34m # Specifies whether a service account should be created.[m
+  [36mcreate[m[35m:[m [31mtrue[m
+ [34m # Automatically mount a ServiceAccount's API credentials?[m
+  [36mautomount[m[35m:[m [31mtrue[m
+ [34m # Annotations to add to the service account.[m
+  [36mannotations[m[35m:[m [35m{}[m
+ [34m # The name of the service account to use.
+[m [34m # If not set and create is true, a name is generated using the fullname template.[m
+  [36mname[m[35m:[m [31m""[m
+
+[34m# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annn[40;1Hotations/[m
+[36mpodAnnotations[m[35m:[m [35m{}[m
+[34m# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labb[44;1Hels/[m
+[36mpodLabels[m[35m:[m [35m{}[m
+
+[36mpodSecurityContext[m[35m:[m [35m{}[m
+ [34m # fsGroup: 2000[m
+
+[36msecurityContext[m[35m:[m [35m{}[m
+ [34m # capabilities:
+[m [34m #   drop:[m[53;85H19,15[9CTop[22;15H[?25h[?12$p[?25l[53;75H/[22;15H[53;76H0[22;15H[53;77H0[22;15H[53;78H0[22;15H[53;79H0[22;15H[53;80H/[22;15H[53;81H0[22;15H[53;82H0[22;15H[53;83H0[22;15H[53;84H0[22;15H[53;75H          [22;15H[27m[23m[29m[m[H[2J[1;1H[96m# Default values for apache-helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/coo[6;1Hncepts/workloads/controllers/replicaset/[m
+[1m[96mreplicaCount[m[38;5;224m:[m [95m2[m
+
+[96m# This sets the container image more information can be found here: https://kubernetes.io/docs/conceptt[10;1Hs/containers/images/[m
+[1m[96mimage[m[38;5;224m:[m
+  [1m[96mrepository[m[38;5;224m:[m nginx
+ [96m # This sets the pull policy for images.[m
+  [1m[96mpullPolicy[m[38;5;224m:[m IfNotPresent
+ [96m # Overrides the image tag whose default is the chart appVersion.[m
+  [1m[96mtag[m[38;5;224m:[m [95m""[m
+
+[96m# This is for the secrets for pulling an image from a private repository more information can be foundd[19;1H here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m
+[1m[96mimagePullSecrets[m[38;5;224m:[m [38;5;224m[][m
+[96m# This is to override the chart name.[m
+[1m[96mnameOverride[m[38;5;224m:[m [95m""[m
+[1m[96mfullnameOverride[m[38;5;224m:[m [95m""[m
+
+[96m# This section builds out the service account more information can be found here: https://kubernetes.ii[26;1Ho/docs/concepts/security/service-accounts/[m
+[1m[96mserviceAccount[m[38;5;224m:[m
+ [96m # Specifies whether a service account should be created.[m
+  [1m[96mcreate[m[38;5;224m:[m [95mtrue[m
+ [96m # Automatically mount a ServiceAccount's API credentials?[m
+  [1m[96mautomount[m[38;5;224m:[m [95mtrue[m
+ [96m # Annotations to add to the service account.[m
+  [1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # The name of the service account to use.
+[m [96m # If not set and create is true, a name is generated using the fullname template.[m
+  [1m[96mname[m[38;5;224m:[m [95m""[m
+
+[96m# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annn[40;1Hotations/[m
+[1m[96mpodAnnotations[m[38;5;224m:[m [38;5;224m{}[m
+[96m# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labb[44;1Hels/[m
+[1m[96mpodLabels[m[38;5;224m:[m [38;5;224m{}[m
+
+[1m[96mpodSecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # fsGroup: 2000[m
+
+[1m[96msecurityContext[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # capabilities:
+[m [96m #   drop:[m[53;85H19,15[9CTop"values.yaml" 161L, 5277B[22;15H[?25h[?25l[53;75H~@k[22;15H[53;75H   [23;15H[53;85H20[23;15H[?25h[?25l[53;75H~@k[23;15H[53;75H   [24;1H[53;86H1,0-1[24;1H[?25h[?25l[53;75H~@k[24;1H[53;75H   [25;15H[53;86H2,15 [25;15H[?25h[?25l[53;75H~@k[25;15H[53;75H   [27;15H[53;86H3[27;15H[?25h[?25l[53;75H~@k[27;15H[53;75H   [28;15H[53;86H4[28;15H[?25h[?25l[53;75H~@k[28;15H[53;75H   [29;14H[53;86H5,14[29;14H[?25h[?25l[53;75H~@k[29;14H[53;75H   [30;15H[53;86H6,15[30;15H[?25h[?25l[53;75H~@k[30;15H[53;75H   [31;15H[53;86H7[31;15H[?25h[?25l[53;75H~@k[31;15H[53;75H   [32;15H[53;86H8[32;15H[?25h[?25l[53;75H~@k[32;15H[53;75H   [33;15H[53;86H9[33;15H[?25h[?25l[53;75H~@k[33;15H[53;75H   [34;15H[53;85H30[34;15H[?25h[?25l[53;75H~@k[34;15H[53;75H   [35;15H[53;86H1[35;15H[?25h[?25l[53;75H~@k[35;15H[53;75H   [36;10H[53;86H2,10[36;10H[?25h[?25l[53;75H~@k[36;10H[53;75H   [37;1H[53;86H3,0-1[37;1H[?25h[?25l[53;75H~@k[37;1H[53;75H   [38;15H[53;86H4,15 [38;15H[?25h[?25l[53;75H~@k[38;15H[53;75H   [39;15H[53;86H5[39;15H[?25h[?25l[53;75H~@k[39;15H[53;75H   [41;15H[53;86H6[41;15H[?25h[?25l[53;75H~@k[41;15H[53;75H   [42;15H[53;86H7[42;15H[?25h[?25l[53;75H~@k[42;15H[53;75H   [43;15H[53;86H8[43;15H[?25h[?25l[53;75H~@k[43;15H[53;75H   [45;13H[38;5;224m[46m{}[m[53;86H9,13[45;13H[?25h[?25l[53;75H~@k[45;13H[53;75H   [46;1H[45;12H[38;5;224m{}[m[53;85H40,0-1[46;1H[?25h[?25l[53;75H~@k[46;1H[53;75H   [47;15H[53;86H1,15 [47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;2H[96m #   - ALL[m[53;1H[K[53;85H42,15[10C0%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;1H[1;52r[52;1H
+[1;53r[52;2H[96m # readOnlyRootFilesystem: true[m[53;85H[K[53;85H43,0-1[9C1%[47;1H[?25h[?25l[53;75H~@k[47;1H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;2H[96m # runAsNonRoot: true[m[53;85H[K[53;85H44,15[10C2%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;2H[96m # runAsUser: 1000[m[53;85H[K[53;85H45,15[10C3%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [46;11H[1;52r[1;1H[2M[1;53r[52;1H[96m# This is for setting up a service more information can be found here: https://kubernetes.io/docs/conc[m[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H46,11[10C4%[46;11H[?25h[?25l[53;75H~@k[46;11H[53;75H   [47;11H[53;86H7[47;11H[?25h[?25l[53;75H~@k[47;11H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[51;1H[96m# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concc[52;1Hepts/services-networking/service/[m[53;85H[K[53;85H48,15[10C5%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;1H[1m[96mservice[m[38;5;224m:[m[53;85H[K[53;85H49,15[10C6%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [46;15H[1;52r[1;1H[2M[1;53r[51;2H[96m # This sets the service type more information can be found here: https://kubernetes.io/docs/conceptss[52;1H/services-networking/service/#publishing-services-service-types[m[53;85H[K[53;85H50,15[10C6%[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [47;1H[53;86H1,0-1[47;1H[?25h[?25l[53;75H~@k[47;1H[53;75H   [45;15H[1;52r[1;1H[3M[1;53r[50;3H[1m[96mtype[m[38;5;224m:[m ClusterIP
+ [96m # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/servicc[52;1Hes-networking/service/#field-spec-ports[m[53;85H[K[53;85H52,15[10C9%[45;15H[?25h[?25l[53;75H~@k[45;15H[53;75H   [47;8H[53;86H3,8 [47;8H[?25h[?25l[53;75H~@k[47;8H[53;75H   [46;15H[1;52r[1;1H[2M[1;53r[51;3H[1m[96mport[m[38;5;224m:[m [95m80[m[53;85H[K[53;85H54,15[9C11%[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [46;15H[1;52r[1;1H[2M[1;53r[51;1H[96m# This block is for setting up the ingress for more information can be found here: https://kubernetes..[52;1Hio/docs/concepts/services-networking/ingress/[m[53;85H[K[53;85H55,15[9C12%[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [45;15H[1;52r[1;1H[2M[1;53r[51;1H[1m[96mingress[m[38;5;224m:[m
+  [1m[96menabled[m[38;5;224m:[m [95mfalse[m[53;85H[K[53;85H56,15[9C13%[45;15H[?25h[?25l[53;75H~@k[45;15H[53;75H   [47;10H[53;86H7,10[47;10H[?25h[?25l[53;75H~@k[47;10H[53;75H   [47;1H[1;52r[52;1H
+[1;53r[52;3H[1m[96mclassName[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H58,0-1[8C14%[47;1H[?25h[?25l[53;75H~@k[47;1H[53;75H   [46;15H[1;52r[1;1H[2M[1;53r[51;3H[1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m
+   [96m # kubernetes.io/ingress.class: nginx[m[53;85H[K[53;85H59,15[9C16%[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [47;8H[1;52r[52;1H
+[1;53r[52;4H[96m # kubernetes.io/tls-acme: "true"[m[53;85H[K[53;85H60,8[10C17%[47;8H[?25h[?25l[53;75H~@k[47;8H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;3H[1m[96mhosts[m[38;5;224m:[m[53;85H[K[53;85H61,15[9C18%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [46;15H[1;52r[1;1H[2M[1;53r[51;5H[93m- [m[1m[96mhost[m[38;5;224m:[m chart-example.local[52;7H[1m[96mpaths[m[38;5;224m:[m[53;85H[K[53;85H62,15[9C19%[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [47;15H[53;86H3[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;9H[93m- [m[1m[96mpath[m[38;5;224m:[m /[53;85H[K[53;85H64,15[9C20%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [47;15H[1;52r[52;1H
+[1;53r[52;11H[1m[96mpathType[m[38;5;224m:[m ImplementationSpecific[53;85H[K[53;85H65,15[9C20%[47;15H[?25h[?25l[53;75H~@k[47;15H[53;75H   [46;15H[53;86H4[46;15H[?25h[?25l[53;75H~@k[46;15H[53;75H   [45;15H[53;86H3[45;15H[?25h[?25l[53;75H~@k[45;15H[53;75H   [44;15H[53;86H2[44;15H[?25h[?25l[53;75H~@k[44;15H[53;75H   [43;15H[53;86H1[43;15H[?25h[?25l[53;75H~@k[43;15H[53;75H   [42;8H[53;86H0,8 [42;8H[?25h[?25l[53;75H~@k[42;8H[53;75H   [40;15H[53;85H59,15[40;15H[?25h[?25l[53;75H~@k[40;15H[53;75H   [39;1H[53;86H8,0-1[39;1H[?25h[?25l[53;75H^I[39;1H[53;75H  [39;1H[?25h[?25l[53;75H<20>[39;1H[53;75H    [40;1H[53;86H9,1  [40;1H[?25h[?25l[53;75H~@k[40;1H[53;75H   [39;1H[53;86H8,0-1[39;1H[?25h[?25l[53;75Hi[39;1H[53;75H [39;1H[53;1H[1m-- INSERT --[m[53;85H[K[53;85H58,1[10C20%[39;1H[?25h[?25l[53;88H3[39;3H[?25h[?25lt[53;88H4[39;4H[?25h[?25la[53;88H5[39;5H[?25h[?25lr[53;88H6[39;6H[?25h[?25lf[53;88H7[39;7H[?25h[?25le[53;88H8[39;8H[?25h[?25lt[53;88H9[39;9H[?25h[?25lP[53;88H10[39;10H[?25h[?25lo[53;89H1[39;11H[?25h[?25lr[53;89H2[39;12H[?25h[?25lt[53;89H3[39;13H[?25h[?25l  [1m[96mtarfetPort[m[38;5;224m:[m[53;89H4[39;14H[?25h[?25l[53;89H5[39;15H[?25h[?25l[95m8[m[53;89H6[39;16H[?25h[?25l[95m0[m[53;89H7[39;17H[?25h[?25l[53;86H9[40;17H[?25h[?25l[53;85H60,9 [42;9H[?25h[?25l[53;86H1,17[43;17H[?25h[?25l[53;86H2,16[44;16H[?25h[?25l[45;16H[38;5;224m[46m{}[m[53;86H3,17[45;17H[?25h[?25l[38;5;224m{}[m[53;86H4[46;17H[?25h[?25l[53;86H5[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mtls[m[38;5;224m:[m [38;5;224m[][m[53;85H[K[53;85H66,9[10C21%[47;9H[?25h[?25l[1;52r[52;1H
+[1;53r[52;4H[96m # - secretName: chart-example-tls[m[53;85H[K[53;85H67,17[9C22%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;4H[96m #   hosts:[m[53;85H[K[53;85H68,13[9C23%[47;13H[?25h[?25l[1;52r[52;1H
+[1;53r[52;4H[96m #     - chart-example.local[m[53;85H[K[53;85H69,17[9C24%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H70,17[9C25%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[96m# -- Expose the service via gateway-api HTTPRoute[m[53;85H[K[53;85H71,10[9C26%[47;8H[38;5;224m[46m[][?25h[?25l[1;52r[m[52;1H
+[1;53r[52;1H[96m# Requires Gateway API resources and suitable controller installed within the cluster[m[53;85H[K[53;85H72,17[9C26%[46;8H[38;5;224m[][47;17H[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;1H[96m# (see: https://gateway-api.sigs.k8s.io/guides/)[m[53;85H[K[53;85H73,15[9C27%[47;15H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mhttpRoute[m[38;5;224m:[m[53;85H[K[53;85H74,17[9C28%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # HTTPRoute enabled.[m[53;85H[K[53;85H75,1[10C29%[47;1H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;3H[1m[96menabled[m[38;5;224m:[m [95mfalse[m
+ [96m # HTTPRoute annotations.[m[53;85H[K[53;85H76,17[9C30%[46;17H[?25h[?25l[53;86H7[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H78,17[9C31%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # Which Gateways this Route is attached to.[m[53;85H[K[53;85H79,11[9C32%[47;11H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;3H[1m[96mparentRefs[m[38;5;224m:[m
+  [93m- [m[1m[96mname[m[38;5;224m:[m gateway[53;85H[K[53;85H80,17[9C33%[46;17H[?25h[?25l[53;86H1[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;5H[1m[96msectionName[m[38;5;224m:[m http[53;85H[K[53;85H82,17[9C34%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;4H[96m # namespace: default[m[53;85H[K[53;85H83,17[9C35%[47;16H[38;5;224m[46m{}[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;2H[96m # Hostnames matching HTTP header.[m[53;85H[K[53;85H84,17[9C36%[46;16H[38;5;224m{}[47;17H[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;3H[1m[96mhostnames[m[38;5;224m:[m[53;85H[K[53;85H85,14[9C37%[47;14H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[93m- [mchart-example.local[53;85H[K[53;85H86,17[9C38%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # List of rules and filters applied.[m[53;85H[K[53;85H87,17[9C38%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mrules[m[38;5;224m:[m[53;85H[K[53;85H88,17[9C39%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[93m- [m[1m[96mmatches[m[38;5;224m:[m[53;85H[K[53;85H89,17[9C40%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;5H[93m- [m[1m[96mpath[m[38;5;224m:[m[53;85H[K[53;85H90,13[9C41%[47;13H[?25h[?25l[1;52r[52;1H
+[1;53r[52;9H[1m[96mtype[m[38;5;224m:[m PathPrefix[53;85H[K[53;85H91,17[9C42%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;9H[1m[96mvalue[m[38;5;224m:[m /headers[53;85H[K[53;85H92,17[9C43%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   filters:[m[53;85H[K[53;85H93,9[10C44%[47;9H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   - type: RequestHeaderModifier[m[53;85H[K[53;85H94,13[9C45%[47;13H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;2H[96m #     requestHeaderModifier:
+[m [96m #       set:[m[53;85H[K[53;85H95,12[9C46%[46;12H[?25h[?25l[53;86H6,17[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #       - name: My-Overwrite-Header[m[53;85H[K[53;85H97,17[9C47%[47;17H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;2H[96m #         value: this-is-the-only-value
+[m [96m #       remove:[m[53;85H[K[53;85H98,15[9C48%[46;15H[?25h[?25l[53;86H9,17[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #       - User-Agent[m[53;85H[K[53;85H100,17[8C49%[47;17H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;2H[96m # - matches:
+[m [96m #   - path:[m[53;85H[K[53;85H101,15[8C50%[46;15H[?25h[?25l[53;87H2,17[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #       type: PathPrefix[m[53;85H[K[53;85H103,17[8C51%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #       value: /echo[m[53;85H[K[53;85H104,17[8C52%[47;17H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;2H[96m #     headers:
+[m [96m #     - name: version[m[53;85H[K[53;85H105,17[8C54%[46;17H[?25h[?25l[53;87H6,15[47;15H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #       value: v2[m[53;85H[K[53;85H107,14[8C55%[47;14H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H108,17[8C55%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mresources[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H109,17[8C56%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # We usually recommend not to specify default resources and to leave this as a conscious[m[53;85H[K[53;85H110,17[8C57%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # choice for the user. This also increases chances charts run on environments with little[m[53;85H[K[53;85H111,17[8C58%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # resources, such as Minikube. If you do want to specify resources, uncomment the following[m[53;85H[K[53;85H112,17[8C59%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # lines, adjust them as necessary, and remove the curly braces after 'resources:'.[m[53;85H[K[53;85H113,1[9C60%[47;1H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # limits:[m[53;85H[K[53;85H114,14[8C61%[47;12H[38;5;224m[46m{}[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;2H[96m #   cpu: 100m[m[53;85H[K[53;85H115,17[8C62%[46;12H[38;5;224m{}[47;17H[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;2H[96m #   memory: 128Mi[m[53;85H[K[53;85H116,17[8C63%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # requests:[m[53;85H[K[53;85H117,17[8C64%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   cpu: 100m[m[53;85H[K[53;85H118,17[8C65%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   memory: 128Mi[m[53;85H[K[53;85H119,12[8C66%[47;12H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H120,16[8C66%[47;16H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;1H[96m# This is to setup the liveness and readiness probes more information can be found here: https://kuberr[52;1Hnetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[m[53;85H[K[53;85H121,17[8C68%[46;17H[?25h[?25l[53;87H2,14[47;14H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mlivenessProbe[m[38;5;224m:[m[53;85H[K[53;85H123,16[8C69%[47;16H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mhttpGet[m[38;5;224m:[m[53;85H[K[53;85H124,17[8C70%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;5H[1m[96mpath[m[38;5;224m:[m /[53;85H[K[53;85H125,1[9C70%[47;1H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;5H[1m[96mport[m[38;5;224m:[m http
+[1m[96mreadinessProbe[m[38;5;224m:[m[53;85H[K[53;85H126,17[8C72%[46;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mhttpGet[m[38;5;224m:[m[53;85H[K[53;85H127,15[8C73%[47;15H[?25h[?25l[1;52r[52;1H
+[1;53r[52;5H[1m[96mpath[m[38;5;224m:[m /[53;85H[K[53;85H128,11[8C74%[47;11H[?25h[?25l[1;52r[52;1H
+[1;53r[52;5H[1m[96mport[m[38;5;224m:[m http[53;85H[K[53;85H129,12[8C75%[47;12H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H130,15[8C76%[47;15H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;1H[96m# This section is for setting up autoscaling more information can be found here: https://kubernetes.ioo[52;1H/docs/concepts/workloads/autoscaling/[m[53;85H[K[53;85H131,16[8C77%[46;16H[?25h[?25l[53;87H2,11[47;11H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mautoscaling[m[38;5;224m:[m[53;85H[K[53;85H133,12[8C78%[47;12H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96menabled[m[38;5;224m:[m [95mfalse[m[53;85H[K[53;85H134,15[8C79%[47;15H[?25h[?25l[1;52r[52;1H
+[1;53r[52;3H[1m[96mminReplicas[m[38;5;224m:[m [95m1[m[53;85H[K[53;85H135,1[9C80%[47;1H[?25h[?25l[1;52r[1;1H[2M[1;53r[51;3H[1m[96mmaxReplicas[m[38;5;224m:[m [95m100[m
+  [1m[96mtargetCPUUtilizationPercentage[m[38;5;224m:[m [95m80[m[53;85H[K[53;85H136,17[8C81%[46;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # targetMemoryUtilizationPercentage: 80[m[53;85H[K[53;85H137,13[8C82%[47;13H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H138,17[8C83%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[96m# Additional volumes on the output Deployment definition.[m[53;85H[K[53;85H139,17[8C84%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mvolumes[m[38;5;224m:[m [38;5;224m[][m[53;85H[K[53;85H140,17[8C85%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # - name: foo[m[53;85H[K[53;85H141,17[8C86%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   secret:[m[53;85H[K[53;85H142,17[8C87%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #     secretName: mysecret[m[53;85H[K[53;85H143,1[9C88%[47;1H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #     optional: false[m[53;85H[K[53;85H144,17[8C89%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H145,12[8C90%[47;10H[38;5;224m[46m[][?25h[?25l[1;52r[m[52;1H
+[1;53r[52;1H[96m# Additional volumeMounts on the output Deployment definition.[m[53;85H[K[53;85H146,16[8C90%[46;10H[38;5;224m[][47;16H[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;1H[1m[96mvolumeMounts[m[38;5;224m:[m [38;5;224m[][m[53;85H[K[53;85H147,14[8C91%[47;14H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m # - name: foo[m[53;85H[K[53;85H148,17[8C92%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   mountPath: "/etc/foo"[m[53;85H[K[53;85H149,17[8C93%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;2H[96m #   readOnly: true[m[53;85H[K[53;85H150,1[9C94%[47;1H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H151,17[8C95%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96mnodeSelector[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H152,17[8C96%[47;15H[38;5;224m[46m[][?25h[?25l[1;52r[m[52;1H
+[1;53r[53;85H[K[53;85H153,16[8C97%[46;15H[38;5;224m[][47;16H[?25h[?25l[1;52r[m[52;1H
+[1;53r[52;1H[1m[96mtolerations[m[38;5;224m:[m [38;5;224m[][m[53;85H[K[53;85H154,17[8C98%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[53;85H[K[53;85H155,17[8C99%[47;17H[?25h[?25l[1;52r[52;1H
+[1;53r[52;1H[1m[96maffinity[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H156,1[9CBot[47;1H[?25h[?25l[48;15H[38;5;224m[46m{}[m[53;87H7,17[48;17H[?25h[?25l[38;5;224m{}[m[53;87H8,1 [49;1H[?25h[?25l[50;14H[38;5;224m[46m[][m[53;87H9,16[50;16H[?25h[?25l[38;5;224m[][m[53;86H60,1 [51;1H[?25h[?25l[52;11H[38;5;224m[46m{}[m[53;87H1,13[52;13H[?25h[53;1H[K[52;12H[?25l[53;75H^[[52;12H[53;75H  [52;13H[53;85H161,12[8CBot[52;12H[?25h[?25l[53;75H:[52;12H[53;75H[K[53;1H:[?25hwq[?25l[?2004l[>4;m"values.yaml" 161L, 5293B written[23;2t[23;1t
+[?1004l[?2004l[?1l>[?25h[>4;m[?1049l[23;0;0t[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ helm package .
+[?2004lSuccessfully packaged chart and saved it to: /home/shubheksam/K8s/Helm/apache-helm/apache-helm-0.1.0.tgz
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ ls
+[?2004lChart.yaml  [0m[01;31mapache-helm-0.1.0.tgz[0m  [01;34mcharts[0m  [01;34mtemplates[0m  values.yaml
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ rm apache-helm-0.1.0.tgz 
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm/apache-helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm/apache-helm[00m$ cd ..
+[?2004l[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ls
+[?2004l[0m[01;34mapache-helm[0m  [01;32mget_helm.sh[0m  helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ lscd ..rm apache-helm-0.1.0.tgz ls[Khelm package .vim values.yaml [2Phelm package .
+[?2004lError: unable to detect chart at /home/shubheksam/K8s/Helm/Chart.yaml: open /home/shubheksam/K8s/Helm/Chart.yaml: no such file or directory
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm package .a.pache-helm/. .[K
+[?2004lSuccessfully packaged chart and saved it to: /home/shubheksam/K8s/Helm/apache-helm-0.1.0.tgz
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ls
+[?2004l[0m[01;34mapache-helm[0m  [01;31mapache-helm-0.1.0.tgz[0m  [01;32mget_helm.sh[0m  helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm insta;;[K[Kll dev-install apache-helm
+[?2004lNAME: dev-install
+LAST DEPLOYED: Tue May 19 11:42:31 2026
+NAMESPACE: [36mdefault[0m
+STATUS: [32mdeployed[0m
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=apache-helm,app.kubernetes.io/instance=dev-install" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ju[K[Kkubectl get pods
+[?2004lNAME                                       READY   STATUS      RESTARTS   AGE
+dev-install-apache-helm-7bd9f495c8-57r4r   1/1     Running     0          44s
+dev-install-apache-helm-7bd9f495c8-5z9fw   1/1     Running     0          44s
+hello-29652851-r5x4k                       0/1     Completed   0          2m15s
+hello-29652852-5r7lk                       0/1     Completed   0          75s
+hello-29652853-9nbdk                       0/1     Completed   0          15s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get pods[K[K[K[Kdeployment
+[?2004lNAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+dev-install-apache-helm   2/2     2            2           91s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get deployment[K[K[K[K[K[K[K[K[K[Ksvc
+[?2004lNAME                      TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
+dev-install-apache-helm   ClusterIP   10.96.77.29   <none>        80/TCP    98s
+kubernetes                ClusterIP   10.96.0.1     <none>        443/TCP   86d
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get svcdeployment[6Ppodshelm install dev-install apache-helm[1@u[1@n[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1Ppache-helm[1Pache-helm[1Pche-helm[1Phe-helm[1Pe-helm[1P-helm[1Phelm[1Pelm[1Plm[1Pm[K
+[?2004lrelease "dev-install" uninstalled
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm uninstall dev-install [12Pkubectl get svc
+[?2004lNAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   86d
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get svchelm uninstall dev-install [12Pkubectl get svcdeployment
+[?2004lNo resources found in default namespace.
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get deploymentsvc[Khelm uninstall dev-install [12Pkubectl get svcdeployment[6Ppods
+[?2004lNAME                   READY   STATUS      RESTARTS   AGE
+hello-29652853-9nbdk   0/1     Completed   0          2m19s
+hello-29652854-w6hpf   0/1     Completed   0          79s
+hello-29652855-qdntk   0/1     Completed   0          19s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get podsdeploymentsvc[Khelm uninstall dev-install [12Pkubectl get svcdeployment[6Ppodshelm install dev-install apache-helm[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cls[Khelm install dev-install apache-helm -n dec[Kv-apacje[K[Khe --create-namespache[K[Ke
+[?2004lNAME: dev-install
+LAST DEPLOYED: Tue May 19 11:46:23 2026
+NAMESPACE: [36mdev-apache[0m
+STATUS: [32mdeployed[0m
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace dev-apache -l "app.kubernetes.io/name=apache-helm,app.kubernetes.io/instance=dev-install" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace dev-apache $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace dev-apache port-forward $POD_NAME 8080:$CONTAINER_PORT
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm install dev-install apache-helm -n dev-apache --create-namespace[1P[1P[1P[1@p[1@r[1@o[1@d[C[1P[1P[1P[1P[1P[C[1P[1P[1@a[1@p[1@a[1@c[1@h[1@e[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P[1P[1P[1@p[1@r[1@o[1@d
+[?2004lNAME: prod-apache
+LAST DEPLOYED: Tue May 19 11:47:43 2026
+NAMESPACE: [36mprod-apache[0m
+STATUS: [32mdeployed[0m
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace prod-apache -l "app.kubernetes.io/name=apache-helm,app.kubernetes.io/instance=prod-apache" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace prod-apache $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace prod-apache port-forward $POD_NAME 8080:$CONTAINER_PORT
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm install prod-apache apache-helm -n prod-apache --create-namespace[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1Pdev-install apache-helm -n dev[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ckubectl get pods[Kdeployment[6Ppods -n dev-apache
+[?2004lNAME                                       READY   STATUS    RESTARTS   AGE
+dev-install-apache-helm-7bd9f495c8-78zvs   1/1     Running   0          2m19s
+dev-install-apache-helm-7bd9f495c8-gmtpz   1/1     Running   0          2m19s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get pods -n dev-apache[1P-apache[1P-apache[1P-apachep-apacher-apacheo-apached-apache
+[?2004lNAME                                      READY   STATUS    RESTARTS   AGE
+prod-apache-apache-helm-cf65d88cf-thgsk   1/1     Running   0          67s
+prod-apache-apache-helm-cf65d88cf-v6qk2   1/1     Running   0          67s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get pods -n prod-apache[1Pdev-apache[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Chelm install prod-apache apache-helm -n prod-apache --create-namespace[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[40Pkubectl get pods -n dev-apacheprod-apache[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kkubectl get pods -n prod-apache[1Pdev-apache[C[1P[1P[1P[1P[1@d[1@e[1@p[1@l[1@o[1@y[1@m[1@e[1@n[1@t
+[?2004lNAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+dev-install-apache-helm   2/2     2            2           2m48s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get deployment -n dev-apache[5Ppods -n prod-apache[C[C[1P[1P[1P[1P[1@d[1@e[1@p[1@l[1@o[1@y[1@m[1@e[1@n[1@t
+[?2004lNAME                      READY   UP-TO-DATE   AVAILABLE   AGE
+prod-apache-apache-helm   2/2     2            2           100s
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ kubectl get deployment -n prod-apache[1Pdev-apache[5Ppods -n prod-apachedeployment -n dev-apacheprod-apache[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kvim apache-helm/values.yaml 
+[?2004l[?1049h[22;0;0t[>4;2m[?1h=[?2004h[?1004h[1;53r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[53;1H"apache-helm/values.yaml" 161L, 5293B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c]10;?]11;?[1;2H[34m #       value: v2[m[2;1H[K[3;1H[36mresources[m[35m:[m [35m{}[m[3;14H[K[4;2H[34m # We usually recommend not to specify default resources and to leave this as a conscious
+[m [34m # choice for the user. This also increases chances charts run on environments with little
+[m [34m # resources, such as Minikube. If you do want to specify resources, uncomment the following
+[m [34m # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+[m [34m # limits:
+[m [34m #   cpu: 100m
+[m [34m #   memory: 128Mi
+[m [34m # requests:
+[m [34m #   cpu: 100m
+[m [34m #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kuberr[16;1Hnetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[m
+[36mlivenessProbe[m[35m:[m
+  [36mhttpGet[m[35m:[m
+    [36mpath[m[35m:[m /
+    [36mport[m[35m:[m http
+[36mreadinessProbe[m[35m:[m
+  [36mhttpGet[m[35m:[m
+    [36mpath[m[35m:[m /
+    [36mport[m[35m:[m http
+
+[34m# This section is for setting up autoscaling more information can be found here: https://kubernetes.ioo[27;1H/docs/concepts/workloads/autoscaling/[m
+[36mautoscaling[m[35m:[m
+  [36menabled[m[35m:[m [31mfalse[m
+  [36mminReplicas[m[35m:[m [31m1[m
+  [36mmaxReplicas[m[35m:[m [31m100[m
+  [36mtargetCPUUtilizationPercentage[m[35m:[m [31m80[m
+ [34m # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.[m
+[36mvolumes[m[35m:[m [35m[][m
+ [34m # - name: foo
+[m [34m #   secret:
+[m [34m #     secretName: mysecret
+[m [34m #     optional: false
+
+# Additional volumeMounts on the output Deployment definition.[m
+[36mvolumeMounts[m[35m:[m [35m[][m
+ [34m # - name: foo
+[m [34m #   mountPath: "/etc/foo"
+[m [34m #   readOnly: true[m
+
+[36mnodeSelector[m[35m:[m [35m{}[m
+
+[36mtolerations[m[35m:[m [35m[][m
+
+[36maffinity[m[35m:[m [35m[106m{}[m[53;85H161,12[8CBot[52;12H[?25h[?12$p[?25l[53;75H/[52;12H[53;76H0[52;12H[53;77H0[52;12H[53;78H0[52;12H[53;79H0[52;12H[53;80H/[52;12H[53;81H0[52;12H[53;82H0[52;12H[53;83H0[52;12H[53;84H0[52;12H[53;75H          [52;12H[27m[23m[29m[m[H[2J[1;2H[96m #       value: v2[m
+
+[1m[96mresources[m[38;5;224m:[m [38;5;224m{}[m
+ [96m # We usually recommend not to specify default resources and to leave this as a conscious
+[m [96m # choice for the user. This also increases chances charts run on environments with little
+[m [96m # resources, such as Minikube. If you do want to specify resources, uncomment the following
+[m [96m # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+[m [96m # limits:
+[m [96m #   cpu: 100m
+[m [96m #   memory: 128Mi
+[m [96m # requests:
+[m [96m #   cpu: 100m
+[m [96m #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kuberr[16;1Hnetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/[m
+[1m[96mlivenessProbe[m[38;5;224m:[m
+  [1m[96mhttpGet[m[38;5;224m:[m
+    [1m[96mpath[m[38;5;224m:[m /
+    [1m[96mport[m[38;5;224m:[m http
+[1m[96mreadinessProbe[m[38;5;224m:[m
+  [1m[96mhttpGet[m[38;5;224m:[m
+    [1m[96mpath[m[38;5;224m:[m /
+    [1m[96mport[m[38;5;224m:[m http
+
+[96m# This section is for setting up autoscaling more information can be found here: https://kubernetes.ioo[27;1H/docs/concepts/workloads/autoscaling/[m
+[1m[96mautoscaling[m[38;5;224m:[m
+  [1m[96menabled[m[38;5;224m:[m [95mfalse[m
+  [1m[96mminReplicas[m[38;5;224m:[m [95m1[m
+  [1m[96mmaxReplicas[m[38;5;224m:[m [95m100[m
+  [1m[96mtargetCPUUtilizationPercentage[m[38;5;224m:[m [95m80[m
+ [96m # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.[m
+[1m[96mvolumes[m[38;5;224m:[m [38;5;224m[][m
+ [96m # - name: foo
+[m [96m #   secret:
+[m [96m #     secretName: mysecret
+[m [96m #     optional: false
+
+# Additional volumeMounts on the output Deployment definition.[m
+[1m[96mvolumeMounts[m[38;5;224m:[m [38;5;224m[][m
+ [96m # - name: foo
+[m [96m #   mountPath: "/etc/foo"
+[m [96m #   readOnly: true[m
+
+[1m[96mnodeSelector[m[38;5;224m:[m [38;5;224m{}[m
+
+[1m[96mtolerations[m[38;5;224m:[m [38;5;224m[][m
+
+[1m[96maffinity[m[38;5;224m:[m [38;5;224m[46m{}[m[53;85H161,12[8CBot"apache-helm/values.yaml" 161L, 5293B[52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [52;12H[?25h[?25l[53;75H~@k[52;12H[53;75H   [51;1H[52;11H[38;5;224m{}[m[53;87H0,0-1[51;1H[?25h[?25l[53;75H~@k[51;1H[53;75H   [50;12H[53;86H59,12 [50;12H[?25h[?25l[53;75H~@k[50;12H[53;75H   [49;1H[53;87H8,0-1[49;1H[?25h[?25l[53;75H~@k[49;1H[53;75H   [48;12H[53;87H7,12 [48;12H[?25h[?25l[53;75H~@k[48;12H[53;75H   [47;1H[53;87H6,0-1[47;1H[?25h[?25l[53;75H~@k[47;1H[53;75H   [46;12H[53;87H5,12 [46;12H[?25h[?25l[53;75H~@k[46;12H[53;75H   [45;12H[53;87H4[45;12H[?25h[?25l[53;75H~@k[45;12H[53;75H   [44;12H[53;87H3[44;12H[?25h[?25l[53;75H~@k[44;12H[53;75H   [43;12H[53;87H2[43;12H[?25h[?25l[53;75H~@k[43;12H[53;75H   [42;12H[53;87H1[42;12H[?25h[?25l[53;75H~@k[42;12H[53;75H   [41;1H[53;87H0,0-1[41;1H[?25h[?25l[53;75H~@k[41;1H[53;75H   [40;12H[53;86H49,12 [40;12H[?25h[?25l[53;75H~@k[40;12H[53;75H   [39;12H[53;87H8[39;12H[?25h[?25l[53;75H~@k[39;12H[53;75H   [38;12H[53;87H7[38;12H[?25h[?25l[53;75H~@k[38;12H[53;75H   [37;12H[53;87H6[37;12H[?25h[?25l[53;75H~@k[37;12H[53;75H   [36;11H[38;5;224m[46m[][m[53;87H5,11[36;11H[?25h[?25l[53;75H~@k[36;11H[53;75H   [35;12H[36;10H[38;5;224m[][m[53;87H4,12[35;12H[?25h[?25l[53;75H~@k[35;12H[53;75H   [34;1H[53;87H3,0-1[34;1H[?25h[?25l[53;75H~@k[34;1H[53;75H   [33;12H[53;87H2,12 [33;12H[?25h[?25l[53;75H~@k[33;12H[53;75H   [32;12H[53;87H1[32;12H[?25h[?25l[53;75H~@k[32;12H[53;75H   [31;12H[53;87H0[31;12H[?25h[?25l[53;75H~@k[31;12H[53;75H   [30;12H[53;86H39[30;12H[?25h[?25l[53;75H~@k[30;12H[53;75H   [29;12H[53;87H8[29;12H[?25h[?25l[53;75H~@k[29;12H[53;75H   [28;12H[53;87H7[28;12H[?25h[?25l[53;75H~@k[28;12H[53;75H   [26;12H[53;87H6[26;12H[?25h[?25l[53;75H~@k[26;12H[53;75H   [25;1H[53;87H5,0-1[25;1H[?25h[?25l[53;75H~@k[25;1H[53;75H   [24;12H[53;87H4,12 [24;12H[?25h[?25l[53;75H~@k[24;12H[53;75H   [23;11H[53;87H3,11[23;11H[?25h[?25l[53;75H~@k[23;11H[53;75H   [22;10H[53;87H2,10[22;10H[?25h[?25l[53;75H~@k[22;10H[53;75H   [21;12H[53;87H1,12[21;12H[?25h[?25l[53;75H~@k[21;12H[53;75H   [20;12H[53;87H0[20;12H[?25h[?25l[53;75H~@k[20;12H[53;75H   [19;11H[53;86H29,11[19;11H[?25h[?25l[53;75H~@k[19;11H[53;75H   [18;10H[53;87H8,10[18;10H[?25h[?25l[53;75H~@k[18;10H[53;75H   [17;12H[53;87H7,12[17;12H[?25h[?25l[53;75H~@k[17;12H[53;75H   [15;12H[53;87H6[15;12H[?25h[?25l[53;75H~@k[15;12H[53;75H   [14;1H[53;87H5,0-1[14;1H[?25h[?25l[53;75H~@k[14;1H[53;75H   [13;12H[53;87H4,12 [13;12H[?25h[?25l[53;75H~@k[13;12H[53;75H   [12;12H[53;87H3[12;12H[?25h[?25l[53;75H~@k[12;12H[53;75H   [11;12H[53;87H2[11;12H[?25h[?25l[53;75H~@k[11;12H[53;75H   [10;12H[53;87H1[10;12H[?25h[?25l[53;75H~@k[10;12H[53;75H   [9;12H[53;87H0[9;12H[?25h[?25l[53;75H~@k[9;12H[53;75H   [8;11H[53;86H19,11[8;11H[?25h[?25l[53;75H~@k[8;11H[53;75H   [7;12H[53;87H8,12[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[53;87H7[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #     - name: version[m[53;1H[K[53;85H116,12[8C99%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #     headers:[m[53;85H[K[53;85H115,12[8C98%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #       value: /echo[m[6;12H[38;5;224m[46m{}[m[53;85H[K[53;85H114,12[8C97%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;2H[96m #       type: PathPrefix[m[7;12H[38;5;224m{}[m[53;85H[K[53;85H113,0-1[7C96%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #   - path:[m[53;85H[K[53;85H112,12[8C95%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # - matches:[m[53;85H[K[53;85H111,12[8C94%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #       - User-Agent[m[53;85H[K[53;85H110,12[8C93%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #       remove:[m[53;85H[K[53;85H109,12[8C92%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #         value: this-is-the-only-value[m[53;85H[K[53;85H108,12[8C91%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #       - name: My-Overwrite-Header[m[53;85H[K[53;85H107,12[8C90%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #       set:[m[53;85H[K[53;85H106,12[8C90%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #     requestHeaderModifier:[m[53;85H[K[53;85H105,12[8C89%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #   - type: RequestHeaderModifier[m[53;85H[K[53;85H104,12[8C88%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m #   filters:[m[53;85H[K[53;85H103,12[8C87%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;9H[1m[96mvalue[m[38;5;224m:[m /headers[53;85H[K[53;85H102,12[8C86%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;9H[1m[96mtype[m[38;5;224m:[m PathPrefix[53;85H[K[53;85H101,12[8C85%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;5H[93m- [m[1m[96mpath[m[38;5;224m:[m[53;85H[K[53;85H100,12[8C84%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[93m- [m[1m[96mmatches[m[38;5;224m:[m[53;85H[K[53;85H99,12[9C83%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mrules[m[38;5;224m:[m[53;85H[K[53;85H98,12[9C82%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # List of rules and filters applied.[m[53;85H[K[53;85H97,12[9C81%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[93m- [mchart-example.local[53;85H[K[53;85H96,12[9C81%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;11H[1;52r[1;1H[L[1;53r[1;3H[1m[96mhostnames[m[38;5;224m:[m[53;85H[K[53;85H95,11[9C80%[6;11H[?25h[?25l[53;75H~@k[6;11H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # Hostnames matching HTTP header.[m[53;85H[K[53;85H94,12[9C79%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;8H[1;52r[1;1H[L[1;53r[1;4H[96m # namespace: default[m[53;85H[K[53;85H93,8[10C78%[6;8H[?25h[?25l[53;75H~@k[6;8H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;5H[1m[96msectionName[m[38;5;224m:[m http[53;85H[K[53;85H92,12[9C77%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[93m- [m[1m[96mname[m[38;5;224m:[m gateway[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H91,12[9C76%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mparentRefs[m[38;5;224m:[m[53;85H[K[53;85H90,12[9C76%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # Which Gateways this Route is attached to.[m[53;85H[K[53;85H89,12[9C75%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H88,12[9C74%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # HTTPRoute annotations.[m[53;85H[K[53;85H87,12[9C73%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96menabled[m[38;5;224m:[m [95mfalse[m[53;85H[K[53;85H86,12[9C72%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # HTTPRoute enabled.[m[53;85H[K[53;85H85,12[9C71%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mhttpRoute[m[38;5;224m:[m[53;85H[K[53;85H84,12[9C70%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# (see: https://gateway-api.sigs.k8s.io/guides/)[m[53;85H[K[53;85H83,12[9C70%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# Requires Gateway API resources and suitable controller installed within the cluster[m[53;85H[K[53;85H82,12[9C69%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# -- Expose the service via gateway-api HTTPRoute[m[53;85H[K[53;85H81,12[9C68%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H80,12[9C67%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;10H[1;52r[1;1H[L[1;53r[1;4H[96m #     - chart-example.local[m[53;85H[K[53;85H79,10[9C66%[6;10H[?25h[?25l[53;75H~@k[6;10H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;4H[96m #   hosts:[m[53;85H[K[53;85H78,12[9C66%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;4H[96m # - secretName: chart-example-tls[m[53;85H[K[53;85H77,12[9C65%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mtls[m[38;5;224m:[m [38;5;224m[][m[53;85H[K[53;85H76,12[9C64%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;11H[1m[96mpathType[m[38;5;224m:[m ImplementationSpecific[53;85H[K[53;85H75,0-1[8C63%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;9H[93m- [m[1m[96mpath[m[38;5;224m:[m /[53;85H[K[53;85H74,12[9C62%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;7H[1m[96mpaths[m[38;5;224m:[m[53;85H[K[53;85H73,12[9C61%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;5H[93m- [m[1m[96mhost[m[38;5;224m:[m chart-example.local[53;85H[K[53;85H72,12[9C60%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;9H[1;52r[1;1H[L[1;53r[1;3H[1m[96mhosts[m[38;5;224m:[m[6;8H[38;5;224m[46m[][m[53;85H[K[53;85H71,9[10C59%[6;9H[?25h[?25l[53;75H~@k[6;9H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;4H[96m # kubernetes.io/tls-acme: "true"[m[7;8H[38;5;224m[][m[53;85H[K[53;85H70,12[9C58%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;4H[96m # kubernetes.io/ingress.class: nginx[m[53;85H[K[53;85H69,12[9C57%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H68,12[9C56%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mclassName[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H67,12[9C55%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;8H[1;52r[1;1H[L[1;53r[1;3H[1m[96menabled[m[38;5;224m:[m [95mfalse[m[53;85H[K[53;85H66,8[10C55%[6;8H[?25h[?25l[53;75H~@k[6;8H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mingress[m[38;5;224m:[m[53;85H[K[53;85H65,12[9C54%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;12H[1;52r[1;1H[2L[1;53r[1;1H[96m# This block is for setting up the ingress for more information can be found here: https://kubernetes..[2;1Hio/docs/concepts/services-networking/ingress/[m[53;85H[K[53;85H64,12[9C52%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[53;86H3[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mtarfetPort[m[38;5;224m:[m [95m80[m[53;85H[K[53;85H62,12[9C51%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mport[m[38;5;224m:[m [95m80[m[53;85H[K[53;85H61,12[9C50%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;8H[1;52r[1;1H[2L[1;53r[1;2H[96m # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/servicc[2;1Hes-networking/service/#field-spec-ports[m[53;85H[K[53;85H60,8[10C49%[7;8H[?25h[?25l[53;75H~@k[7;8H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mtype[m[38;5;224m:[m ClusterIP[53;85H[K[53;85H59,12[9C48%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;12H[1;52r[1;1H[2L[1;53r[1;2H[96m # This sets the service type more information can be found here: https://kubernetes.io/docs/conceptss[2;1H/services-networking/service/#publishing-services-service-types[m[53;85H[K[53;85H58,12[9C47%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;10H[53;86H7,10[6;10H[?25h[?25l[53;75H~@k[6;10H[53;75H   [7;12H[1;52r[1;1H[3L[1;53r[1;1H[96m# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concc[2;1Hepts/services-networking/service/[m
+[1m[96mservice[m[38;5;224m:[m[53;85H[K[53;85H56,12[9C45%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[53;86H5[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[2L[1;53r[1;2H[96m # runAsUser: 1000[m[53;85H[K[53;85H54,12[9C43%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;8H[1;52r[1;1H[L[1;53r[1;2H[96m # runAsNonRoot: true[m[53;85H[K[53;85H53,8[10C42%[6;8H[?25h[?25l[53;75H~@k[6;8H[53;75H   [6;12H[1;52r[1;1H[2L[1;53r[1;2H[96m #   - ALL
+[m [96m # readOnlyRootFilesystem: true[m[53;85H[K[53;85H52,12[9C40%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;2H[96m #   drop:[m[53;85H[K[53;85H51,0-1[8C39%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # capabilities:[m[53;85H[K[53;85H50,12[9C38%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96msecurityContext[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H49,12[9C38%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H48,12[9C37%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;11H[1;52r[1;1H[L[1;53r[1;2H[96m # fsGroup: 2000[m[53;85H[K[53;85H47,11[9C36%[6;11H[?25h[?25l[53;75H~@k[6;11H[53;75H   [6;11H[1;52r[1;1H[L[1;53r[1;1H[1m[96mpodSecurityContext[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H46,11[9C35%[6;11H[?25h[?25l[53;75H~@k[6;11H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H45,12[9C34%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mpodLabels[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H44,12[9C33%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;1H[1;52r[1;1H[2L[1;53r[1;1H[96m# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labb[2;1Hels/[m[53;85H[K[53;85H43,0-1[8C32%[7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [6;12H[53;86H2,12 [6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# This is for setting Kubernetes Labels to a Pod.[m[53;85H[K[53;85H41,12[9C31%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;1H[1m[96mpodAnnotations[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H40,0-1[8C30%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [7;12H[1;52r[1;1H[2L[1;53r[1;1H[96m# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annn[2;1Hotations/[m[7;12H[38;5;224m[46m{}[m[53;85H[K[53;85H39,12[9C29%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# This is for setting Kubernetes Annotations to a Pod.[m[8;12H[38;5;224m{}[m[53;85H[K[53;85H38,12[9C28%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H37,12[9C27%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mname[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H36,12[9C26%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[2L[1;53r[1;2H[96m # The name of the service account to use.
+[m [96m # If not set and create is true, a name is generated using the fullname template.[m[53;85H[K[53;85H35,12[9C25%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mannotations[m[38;5;224m:[m [38;5;224m{}[m[53;85H[K[53;85H34,12[9C24%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;2H[96m # Annotations to add to the service account.[m[53;85H[K[53;85H33,0-1[8C23%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;10H[1;52r[1;1H[L[1;53r[1;3H[1m[96mautomount[m[38;5;224m:[m [95mtrue[m[53;85H[K[53;85H32,10[9C22%[6;10H[?25h[?25l[53;75H~@k[6;10H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # Automatically mount a ServiceAccount's API credentials?[m[53;85H[K[53;85H31,12[9C21%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mcreate[m[38;5;224m:[m [95mtrue[m[53;85H[K[53;85H30,12[9C20%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # Specifies whether a service account should be created.[m[53;85H[K[53;85H29,12[9C20%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mserviceAccount[m[38;5;224m:[m[53;85H[K[53;85H28,12[9C19%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;12H[1;52r[1;1H[2L[1;53r[1;1H[96m# This section builds out the service account more information can be found here: https://kubernetes.ii[2;1Ho/docs/concepts/security/service-accounts/[m[53;85H[K[53;85H27,12[9C18%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[53;86H6[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H25,12[9C17%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mfullnameOverride[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H24,12[9C16%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mnameOverride[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H23,12[9C15%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[2L[1;53r[1;1H[1m[96mimagePullSecrets[m[38;5;224m:[m [38;5;224m[][m
+[96m# This is to override the chart name.[m[53;85H[K[53;85H22,12[9C13%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;1H[1;52r[1;1H[2L[1;53r[1;1H[96m# This is for the secrets for pulling an image from a private repository more information can be foundd[2;1H here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[m[53;85H[K[53;85H21,0-1[8C12%[7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [6;12H[53;86H0,12 [6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H19,12[9C11%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;3H[1m[96mtag[m[38;5;224m:[m [95m""[m[53;85H[K[53;85H18,12[9C11%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;2H[96m # Overrides the image tag whose default is the chart appVersion.[m[53;85H[K[53;85H17,12[9C10%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[2L[1;53r[1;2H[96m # This sets the pull policy for images.[m
+  [1m[96mpullPolicy[m[38;5;224m:[m IfNotPresent[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H16,12[10C8%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;3H[1m[96mrepository[m[38;5;224m:[m nginx[53;85H[K[53;85H15,0-1[9C7%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;9H[1;52r[1;1H[L[1;53r[1;1H[1m[96mimage[m[38;5;224m:[m[53;85H[K[53;85H14,9[11C6%[6;9H[?25h[?25l[53;75H~@k[6;9H[53;75H   [7;12H[1;52r[1;1H[2L[1;53r[1;1H[96m# This sets the container image more information can be found here: https://kubernetes.io/docs/conceptt[2;1Hs/containers/images/[m[53;85H[K[53;85H13,12[10C6%[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [6;12H[53;86H2[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H11,12[10C5%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[1m[96mreplicaCount[m[38;5;224m:[m [95m2[m[52;1H[94m@@@                                                                                                   [m[53;85H[K[53;85H10,12[10C4%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [7;6H[1;52r[1;1H[2L[1;53r[1;1H[96m# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/coo[2;1Hncepts/workloads/controllers/replicaset/[m[53;85H[K[53;85H9,6[12C3%[7;6H[?25h[?25l[53;75H~@k[7;6H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[53;85H[K[53;85H8,12[11C2%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [6;1H[1;52r[1;1H[L[1;53r[1;1H[96m# Declare variables to be passed into your templates.[m[53;85H[K[53;85H7,0-1[10C1%[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [6;12H[1;52r[1;1H[L[1;53r[1;1H[96m# This is a YAML-formatted file.[m[53;85H[K[53;85H6,12[11C0%[6;12H[?25h[?25l[53;75H~@k[6;12H[53;75H   [5;12H[1;52r[1;1H[L[1;53r[1;1H[96m# Default values for apache-helm.[m[53;85H[K[53;85H5,12[10CTop[5;12H[?25h[?25l[53;75H~@k[5;12H[53;75H   [4;1H[53;85H4,0-1[4;1H[?25h[?25l[53;75H~@k[4;1H[53;75H   [3;12H[53;85H3,12 [3;12H[?25h[?25l[53;75H~@k[3;12H[53;75H   [2;12H[53;85H2[2;12H[?25h[?25l[53;75H~@k[2;12H[53;75H   [1;12H[53;85H1[1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [1;12H[?25h[?25l[53;75H~@k[1;12H[53;75H   [2;12H[53;85H2[2;12H[?25h[?25l[53;75H~@k[2;12H[53;75H   [3;12H[53;85H3[3;12H[?25h[?25l[53;75H~@k[3;12H[53;75H   [4;1H[53;85H4,0-1[4;1H[?25h[?25l[53;75H~@k[4;1H[53;75H   [5;12H[53;85H5,12 [5;12H[?25h[?25l[53;75H~@k[5;12H[53;75H   [7;12H[53;85H6[7;12H[?25h[?25l[53;75H~@k[7;12H[53;75H   [7;13H[53;88H3[7;13H[?25h[?25l[53;75H~@k[7;13H[53;75H   [7;14H[53;88H4[7;14H[?25h[?25l[53;75H~@k[7;14H[53;75H   [7;15H[53;88H5[7;15H[?25h[?25l[53;75H~@k[7;15H[53;75H   [7;15H[?25h[?25l[53;75Hi[7;15H[53;75H [7;15H[53;1H[1m-- INSERT --[m[53;85H[K[53;85H6,15[10CTop[7;15H[?25h[?25l[53;85H7,1 [8;1H[?25h[?25l[53;85H6,15[7;15H[?25h[?25l[7;15H[K[7;15H[?25h[?25l[95m3[m[53;88H6[7;16H[?25h[53;1H[K[7;15H[?25l[53;75H^[[7;15H[53;75H  [7;16H[53;85H6,15[10CTop[7;15H[?25h[?25l[53;75H:[7;15H[53;75H[K[53;1H:[?25hwq[?25l[?2004l[>4;m"apache-helm/values.yaml" 161L, 5293B written[23;2t[23;1t
+[?1004l[?2004l[?1l>[?25h[>4;m[?1049l[23;0;0t[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ vim apache-helm/charts/[K[K.[K[K[K[K[K[KChart.yaml 
+[?2004l[?1049h[22;0;0t[>4;2m[?1h=[?2004h[?1004h[1;53r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[53;1H"apache-helm/Chart.yaml" 24L, 1147B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c]10;?]11;?[1;1H[36mapiVersion[m[35m:[m v2
+[36mname[m[35m:[m apache-helm[2;18H[K[3;1H[36mdescription[m[35m:[m A Helm chart for Kubernetes[3;41H[K[5;1H[34m# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.[m
+[36mtype[m[35m:[m application
+
+[34m# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)[m
+[36mversion[m[35m:[m 0.1.0
+
+[34m# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.[m
+[36mappVersion[m[35m:[m [31m"1.16.0"[m
+[94m~                                                                                                     [26;1H~                                                                                                     [27;1H~                                                                                                     [28;1H~                                                                                                     [29;1H~                                                                                                     [30;1H~                                                                                                     [31;1H~                                                                                                     [32;1H~                                                                                                     [33;1H~                                                                                                     [34;1H~                                                                                                     [35;1H~                                                                                                     [36;1H~                                                                                                     [37;1H~                                                                                                     [38;1H~                                                                                                     [39;1H~                                                                                                     [40;1H~                                                                                                     [41;1H~                                                                                                     [42;1H~                                                                                                     [43;1H~                                                                                                     [44;1H~                                                                                                     [45;1H~                                                                                                     [46;1H~                                                                                                     [47;1H~                                                                                                     [48;1H~                                                                                                     [49;1H~                                                                                                     [50;1H~                                                                                                     [51;1H~                                                                                                     [52;1H~                                                                                                     [m[53;85H1,1[11CAll[1;1H[?25h[?12$p[?25l[53;75H/[1;1H[53;76H0[1;1H[53;77H0[1;1H[53;78H0[1;1H[53;79H0[1;1H[53;80H/[1;1H[53;81H0[1;1H[53;82H0[1;1H[53;83H0[1;1H[53;84H0[1;1H[53;75H          [1;1H[27m[23m[29m[m[H[2J[1;1H[1m[96mapiVersion[m[38;5;224m:[m v2
+[1m[96mname[m[38;5;224m:[m apache-helm
+[1m[96mdescription[m[38;5;224m:[m A Helm chart for Kubernetes
+
+[96m# A chart can be either an 'application' or a 'library' chart.
+#
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.[m
+[1m[96mtype[m[38;5;224m:[m application
+
+[96m# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)[m
+[1m[96mversion[m[38;5;224m:[m 0.1.0
+
+[96m# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.[m
+[1m[96mappVersion[m[38;5;224m:[m [95m"1.16.0"[m
+[94m~                                                                                                     [26;1H~                                                                                                     [27;1H~                                                                                                     [28;1H~                                                                                                     [29;1H~                                                                                                     [30;1H~                                                                                                     [31;1H~                                                                                                     [32;1H~                                                                                                     [33;1H~                                                                                                     [34;1H~                                                                                                     [35;1H~                                                                                                     [36;1H~                                                                                                     [37;1H~                                                                                                     [38;1H~                                                                                                     [39;1H~                                                                                                     [40;1H~                                                                                                     [41;1H~                                                                                                     [42;1H~                                                                                                     [43;1H~                                                                                                     [44;1H~                                                                                                     [45;1H~                                                                                                     [46;1H~                                                                                                     [47;1H~                                                                                                     [48;1H~                                                                                                     [49;1H~                                                                                                     [50;1H~                                                                                                     [51;1H~                                                                                                     [52;1H~                                                                                                     [m[53;85H1,1[11CAll"apache-helm/Chart.yaml" 24L, 1147B[1;1H[?25h[?25l[53;75H~@k[1;1H[53;75H   [2;1H[53;85H2[2;1H[?25h[?25l[53;75H~@k[2;1H[53;75H   [3;1H[53;85H3[3;1H[?25h[?25l[53;75H~@k[3;1H[53;75H   [4;1H[53;85H4,0-1[4;1H[?25h[?25l[53;75H~@k[4;1H[53;75H   [5;1H[53;85H5,1  [5;1H[?25h[?25l[53;75H~@k[5;1H[53;75H   [6;1H[53;85H6[6;1H[?25h[?25l[53;75H~@k[6;1H[53;75H   [7;1H[53;85H7[7;1H[?25h[?25l[53;75H~@k[7;1H[53;75H   [8;1H[53;85H8[8;1H[?25h[?25l[53;75H~@k[8;1H[53;75H   [9;1H[53;85H9[9;1H[?25h[?25l[53;75H~@k[9;1H[53;75H   [10;1H[53;85H10,1[10;1H[?25h[?25l[53;75H~@k[10;1H[53;75H   [11;1H[53;86H1[11;1H[?25h[?25l[53;75H~@k[11;1H[53;75H   [12;1H[53;86H2[12;1H[?25h[?25l[53;75H~@k[12;1H[53;75H   [13;1H[53;86H3[13;1H[?25h[?25l[53;75H~@k[13;1H[53;75H   [14;1H[53;86H4,0-1[14;1H[?25h[?25l[53;75H~@k[14;1H[53;75H   [15;1H[53;86H5,1  [15;1H[?25h[?25l[53;75H~@k[15;1H[53;75H   [16;1H[53;86H6[16;1H[?25h[?25l[53;75H~@k[16;1H[53;75H   [17;1H[53;86H7[17;1H[?25h[?25l[53;75H~@k[17;1H[53;75H   [18;1H[53;86H8[18;1H[?25h[?25l[53;75H~@k[18;1H[53;75H   [19;1H[53;86H9,0-1[19;1H[?25h[?25l[53;75H~@k[19;1H[53;75H   [20;1H[53;85H20,1  [20;1H[?25h[?25l[53;75H~@k[20;1H[53;75H   [21;1H[53;86H1[21;1H[?25h[?25l[53;75H~@k[21;1H[53;75H   [22;1H[53;86H2[22;1H[?25h[?25l[53;75H~@k[22;1H[53;75H   [23;1H[53;86H3[23;1H[?25h[?25l[53;75H~@k[23;1H[53;75H   [24;1H[53;86H4[24;1H[?25h[?25l[53;75H~@k[24;1H[53;75H   [24;1H[?25h[?25l[53;75H~@k[24;1H[53;75H   [24;1H[?25h[?25l[53;75H~@k[24;1H[53;75H   [24;2H[53;88H2[24;2H[?25h[?25l[53;75H~@k[24;2H[53;75H   [24;3H[53;88H3[24;3H[?25h[?25l[53;75H~@k[24;3H[53;75H   [24;4H[53;88H4[24;4H[?25h[?25l[53;75H~@k[24;4H[53;75H   [24;5H[53;88H5[24;5H[?25h[?25l[53;75H~@k[24;5H[53;75H   [24;6H[53;88H6[24;6H[?25h[?25l[53;75H~@k[24;6H[53;75H   [24;7H[53;88H7[24;7H[?25h[?25l[53;75H~@k[24;7H[53;75H   [24;8H[53;88H8[24;8H[?25h[?25l[53;75H~@k[24;8H[53;75H   [24;9H[53;88H9[24;9H[?25h[?25l[53;75H~@k[24;9H[53;75H   [24;10H[53;88H10[24;10H[?25h[?25l[53;75H~@k[24;10H[53;75H   [24;11H[53;89H1[24;11H[?25h[?25l[53;75H~@k[24;11H[53;75H   [24;12H[53;89H2[24;12H[?25h[?25l[53;75H~@k[24;12H[53;75H   [24;13H[53;89H3[24;13H[?25h[?25l[53;75H~@k[24;13H[53;75H   [24;14H[53;89H4[24;14H[?25h[?25l[53;75H~@k[24;14H[53;75H   [24;15H[53;89H5[24;15H[?25h[?25l[53;75H~@k[24;15H[53;75H   [24;16H[53;89H6[24;16H[?25h[?25l[53;75H~@k[24;16H[53;75H   [24;17H[53;89H7[24;17H[?25h[?25l[53;75H~@k[24;17H[53;75H   [24;18H[53;89H8[24;18H[?25h[?25l[53;75H~@k[24;18H[53;75H   [24;19H[53;89H9[24;19H[?25h[?25l[53;75H~@k[24;19H[53;75H   [24;20H[53;88H20[24;20H[?25h[?25l[53;75Hi[24;20H[53;75H [24;20H[53;1H[1m-- INSERT --[m[53;13H[K[53;85H24,20[9CAll[24;20H[?25h[?25l[95m"[m[24;20H[K[53;88H19[24;19H[?25h[?25l[95m1"[m[53;88H20[24;20H[?25h[53;1H[K[24;19H[?25l[53;75H^[[24;19H[53;75H  [24;20H[53;85H24,19[9CAll[24;19H[?25h[?25l[53;75H:[24;19H[53;75H[K[53;1H:[?25hwq[?25l[?2004l[>4;m"apache-helm/Chart.yaml" 24L, 1147B written[23;2t[23;1t
+[?1004l[?2004l[?1l>[?25h[>4;m[?1049l[23;0;0t[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ vim apache-helm/Chart.yaml [Khel,[Km package apache-helm
+[?2004lSuccessfully packaged chart and saved it to: /home/shubheksam/K8s/Helm/apache-helm-0.1.0.tgz
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ ls
+[?2004l[0m[01;34mapache-helm[0m  [01;31mapache-helm-0.1.0.tgz[0m  [01;32mget_helm.sh[0m  helm
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm upgrade po[Krod-apache ./apache-helm -n prod-apache
+[?2004lRelease "prod-apache" has been upgraded. Happy Helming!
+NAME: prod-apache
+LAST DEPLOYED: Tue May 19 11:54:02 2026
+NAMESPACE: [36mprod-apache[0m
+STATUS: [32mdeployed[0m
+REVISION: 2
+DESCRIPTION: Upgrade complete
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace prod-apache -l "app.kubernetes.io/name=apache-helm,app.kubernetes.io/instance=prod-apache" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace prod-apache $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl --namespace prod-apache port-forward $POD_NAME 8080:$CONTAINER_PORT
+[?2004h]0;shubheksam@SAM: ~/K8s/Helm[01;32mshubheksam@SAM[00m:[01;34m~/K8s/Helm[00m$ helm upgrade prod-apache ./apache-helm -n prod-apache[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cls[Khelm package apache-helmvim apache-helm/Chart.yaml [1@values[C[C[C[C[C[Ckubectl get deployment -n prod-apache[1Pdev-apacheprod-apache[C[C[C[C[C[C[C[C[C
